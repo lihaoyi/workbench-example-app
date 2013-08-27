@@ -9,14 +9,9 @@ To get started, first make the Scala.js compiler, library and sbt plugin
 available locally by publishing them locally. This is very easy, just follow
 the instructions in the [Scala.js readme](https://github.com/lampepfl/scala-js).
 
-Then, copy the Scala.js runtime into the `js/` subdirectory of this project.
-You will find it in the subdirectory `target/` of Scala.js, it is named
-`scalajs-runtime.js`. Optionally, also copy the source map
-`scalajs-runtime.js.map`.
-
 Now, you are good to go. Open `sbt` in this example project, and issue the
-task `package-js`. This creates the file `target/example.js`. You can now
-open `index-dev.html` in your favorite Web browser!
+task `package-js`. This creates the file `target/scala-2.10/example.js`.
+You can now open `index-dev.html` in your favorite Web browser!
 
 During development, it is useful to use `~package-js` in sbt, so that each
 time you save a source file, a compilation of the project is triggered.
@@ -50,11 +45,6 @@ symbols can then be used from other JavaScript code that is not being
 processed by Closure.
 
 ## Troubleshooting
-
-### I don't find `scalajs-runtime.js` Scala.js
-
-You have probably forgotten to execute `package-js` from the sbt prompt in
-Scala.js.
 
 ### I have unresolved dependencies on `scalajs-...`
 
