@@ -10,7 +10,8 @@ available locally by publishing them locally. This is very easy, just follow
 the instructions in the [Scala.js readme](https://github.com/lampepfl/scala-js).
 
 Now, you are good to go. Open `sbt` in this example project, and issue the
-task `packageJS`. This creates the file `target/scala-2.10/example.js`.
+task `packageJS`. This creates the file `target/scala-2.10/example.js` and its
+siblings `example-extdeps.js` and `example-intdeps.js`.
 You can now open `index-dev.html` in your favorite Web browser!
 
 During development, it is useful to use `~packageJS` in sbt, so that each
