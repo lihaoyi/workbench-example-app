@@ -19,10 +19,6 @@ time you save a source file, a compilation of the project is triggered.
 Hence only a refresh of your Web page is needed to see the effects of your
 changes.
 
-Note that Scala.js and sbt do not play well enough together for incremental
-compilation to work. So `packageJS` will recompile all your source files
-everytime.
-
 ## The optimized version
 
 Instead of running `packageJS`, you can also run `optimizeJS` to generate
