@@ -1,1 +1,1 @@
-ScalaJS.modules.example\ufe33ScalaJSExample().main();
+ScalaJS.modules.example_ScalaJSExample().main();
