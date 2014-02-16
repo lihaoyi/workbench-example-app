@@ -3,7 +3,6 @@ package example
 import org.scalajs.dom
 import scala.util.Random
 import scala.scalajs.js
-import scala.collection.mutable
 
 case class Point(x: Double, y: Double){
   def +(p: Point) = Point(x + p.x, y + p.y)
