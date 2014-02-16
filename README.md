@@ -1,4 +1,4 @@
-# Example application written in Scala.js with Scala-js-dom and Scala-js-workbench
+# Example Scala.js application 
 
 This is a slightly less barebone example of an application written in
 [Scala.js](https://github.com/lampepfl/scala-js). In particular, it links
@@ -22,4 +22,5 @@ of the final application.
 
 Take a look at the `dodge-the-dots` branch in the git repository if you
 want to see a slightly more complex application that was made in 30 minutes
-using this skeleton. There's a live demo [here](http://lihaoyi.github.io/workbench-example-app/dodge.html).
+using this skeleton. Similar steps can be used for development (`sbt ~packageJS`) or 
+publication (`sbt optimizeJS`). There's a live demo [here](http://lihaoyi.github.io/workbench-example-app/dodge.html).
