@@ -24,3 +24,8 @@ Take a look at the `dodge-the-dots` branch in the git repository if you
 want to see a slightly more complex application that was made in 30 minutes
 using this skeleton. Similar steps can be used for development (`sbt ~packageJS`) or 
 publication (`sbt optimizeJS`). There's a live demo [here](http://lihaoyi.github.io/workbench-example-app/dodge.html).
+
+## Space Invaders
+
+There's also a `space-invaders` branch, also made in 30 minutes, with its own
+[live demo](http://lihaoyi.github.io/workbench-example-app/invaders.html).
