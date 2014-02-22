@@ -118,7 +118,7 @@ object ScalaJSExample {
         ),
         footer(id:="info")(
           p("Double-click to edit a todo"),
-          p("Template by ", a(href:="http://github.com/lihaoyi")("Li Haoyi")),
+          p(a(href:="https://github.com/lihaoyi/workbench-example-app/blob/todomvc/src/main/scala/example/ScalaJSExample.scala")("Source Code")),
           p("Created by ", a(href:="http://github.com/lihaoyi")("Li Haoyi"))
         )
       )
