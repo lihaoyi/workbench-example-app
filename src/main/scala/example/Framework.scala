@@ -98,7 +98,7 @@ object Framework {
           if (target != null)
             target.func = func: js.Function0[Unit]
         }, 10)
-        tag(id:=elemId, a:=s"this.func()")
+        tag(id:=elemId, a:=s"this.func(); return false;")
       }
     }
     def <~ (func: => Unit) = new CallbackModifier(a, () => func)
