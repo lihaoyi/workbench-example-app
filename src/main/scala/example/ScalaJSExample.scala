@@ -1,45 +1,127 @@
 package example
 
 import org.scalajs.dom
-import scala.util.Random
+import scalatags.all._
+import scalatags.Tags2.section
+import scalatags.ExtendedString
+import rx._
 
-case class Point(x: Int, y: Int){
-  def +(p: Point) = Point(x + p.x, y + p.y)
-  def /(d: Int) = Point(x / d, y / d)
-}
 
+case class Task(txt: Var[String], done: Var[Boolean])
 object ScalaJSExample {
-  val ctx = dom.document
-    .getElementById("triangle-canvas")
-    .asInstanceOf[dom.HTMLCanvasElement]
-    .getContext("2d")
-    .asInstanceOf[dom.CanvasRenderingContext2D]
+  import Framework._
 
-  var count = 0
-  var p = Point(0, 0)
-  val corners = Seq(Point(255, 255), Point(0, 255), Point(128, 0))
+  val tasks = Var(
+    Seq(
+      Task(Var("Create a TodoMVC template D"), Var(true)),
+      Task(Var("Create a TodoMVC template B"), Var(false)),
+      Task(Var("Create a TodoMVC template C"), Var(false))
+    )
+  )
 
-  def clear() = {
-    ctx.fillStyle = "black"
-    ctx.fillRect(0, 0, 255, 255)
-  }
+  val filters: Map[String, Task => Boolean] = Map(
+    ("All", t => true),
+    ("Active", !_.done()),
+    ("Completed", _.done())
+  )
 
-  def run = for (i <- 0 until 10){
-    if (count % 30000 == 0) clear()
-    count += 1
-    p = (p + corners(Random.nextInt(3))) / 2
-    val height = 512.0 / (255 + p.y)
-    val r = (p.x * height).toInt
-    val g = ((255-p.x) * height).toInt
-    val b = p.y
-    ctx.fillStyle = s"rgb($g, $r, $b)"
+  val filter = Var("All")
 
-    ctx.fillRect(p.x, p.y, 1, 1)
-  }
+  val inputBox = new DomRef[dom.HTMLInputElement](input(
+    id:="new-todo",
+    placeholder:="What needs to be done?",
+    autofocus:=true
+  ))
+
+  val editing = Var[Option[Task]](None)
 
   def main(): Unit = {
-    dom.console.log("main")
-
-    dom.setInterval(() => run, 50)
+    dom.document.body.innerHTML = Seq(
+      section(id:="todoapp")(
+        header(id:="header")(
+          h1("todos"),
+          form(
+            inputBox,
+            onsubmit <~ {
+              tasks() = Task(Var(inputBox.value), Var(false)) +: tasks()
+              inputBox.value = ""
+            }
+          )
+        ),
+        section(id:="main")(
+          input(
+            id:="toggle-all",
+            `type`:="checkbox",
+            cursor:="pointer",
+            onclick <~ {
+              val target = tasks().exists(_.done() == false)
+              tasks().map(_.done() = target)
+            }
+          ),
+          label(`for`:="toggle-all", "Mark all as complete"),
+          Rx{
+            dom.console.log("A")
+            ul(id:="todo-list")(
+              for(task <- tasks() if filters(filter())(task)) yield Rx{
+                dom.console.log("B", task.txt())
+                val inputRef = new DomRef[dom.HTMLInputElement](
+                  input(`class`:="edit", value:=task.txt())
+                )
+                li(if(task.done()) `class`:="completed" else (), if(editing() == Some(task)) `class`:="editing" else ())(
+                  div(`class`:="view")(
+                    "ondblclick".attr <~ {editing() = Some(task)},
+                    input(
+                      `class`:="toggle",
+                      `type`:="checkbox",
+                      cursor:="pointer",
+                      onchange <~ {task.done() = !task.done()},
+                      if(task.done()) checked:=true else ()
+                    ),
+                    label(Rx(task.txt())),
+                    button(
+                      `class`:="destroy",
+                      cursor:="pointer",
+                      onclick <~ (tasks() = tasks().filter(_ != task))
+                    )
+                  ),
+                  form(
+                    onsubmit <~ {
+                      task.txt() = inputRef.value
+                      editing() = None
+                    },
+                    inputRef
+                  )
+                )
+              }
+            )
+          },
+          footer(id:="footer")(
+            span(id:="todo-count")(strong(Rx(tasks().count(!_.done()).toString)), " item left"),
+            Rx{
+              ul(id:="filters")(
+                for ((name, pred) <- filters.toSeq) yield {
+                  li(a(
+                    if(name == filter()) `class`:="selected" else (),
+                    name,
+                    href:="#",
+                    onclick <~ (filter() = name)
+                  ))
+                }
+              )
+            },
+            button(
+              id:="clear-completed",
+              onclick <~ {tasks() = tasks().filter(!_.done())},
+              "Clear completed (", Rx(tasks().count(_.done()).toString), ")"
+            )
+          )
+        ),
+        footer(id:="info")(
+          p("Double-click to edit a todo"),
+          p("Template by ", a(href:="http://github.com/lihaoyi")("Li Haoyi")),
+          p("Created by ", a(href:="http://github.com/lihaoyi")("Li Haoyi"))
+        )
+      )
+    ).mkString
   }
 }
