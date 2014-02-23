@@ -5,11 +5,12 @@ import scalatags.{HtmlTag, Attr, Modifier}
 import scala.util.Random
 import scalatags.all._
 import scalatags.HtmlTag
-import rx.Rx
-import rx.core.Obs
+import rx._
+import rx.core.{Propagator, Obs}
 import org.scalajs.dom
 import org.scalajs.dom.DOMParser
 import scala.scalajs.js
+import scalatags.HtmlTag
 
 /**
  * A minimal binding between Scala.Rx and Scalatags and Scala-Js-Dom
@@ -55,6 +56,7 @@ object Framework {
   implicit class RxMod(r: Rx[HtmlTag]) extends Modifier{
     val elemId = r.now.attrs.getOrElse("id", ""+Random.nextInt())
     lazy val obs: Obs = Obs(r, skipInitial = true){
+      dom.console.log("Obs fire!", elemId)
       val target = dom.document.getElementById(elemId)
       val element = dom.document.createElement("div")
       element.innerHTML = r.now(
@@ -64,6 +66,7 @@ object Framework {
         target.parentElement.replaceChild(element.children(0), target)
       }else{
         obs.kill()
+        r.kill()
       }
     }
 
@@ -102,5 +105,22 @@ object Framework {
       }
     }
     def <~ (func: => Unit) = new CallbackModifier(a, () => func)
+  }
+
+  class StagedSet[T](val pair: (Var[T], T)){
+    def set() = {
+      pair._1.updateSilent(pair._2)
+    }
+  }
+  implicit class Stager[T](val v: Var[T]){
+    def ~>(t: T) = new StagedSet(v, t)
+  }
+  implicit class Multisetable(v: Var.type){
+    def set[P: Propagator](stages: StagedSet[_]*) = {
+      stages.foreach(_.set())
+      Propagator().propagate(
+        stages.flatMap( s => s.pair._1.children.map(s.pair._1 -> _)).toSet
+      )
+    }
   }
 }

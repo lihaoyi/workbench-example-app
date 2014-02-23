@@ -5,11 +5,14 @@ import scalatags.all._
 import scalatags.Tags2.section
 import scalatags.ExtendedString
 import rx._
+import rx.core.Propagator
 
 
 case class Task(txt: Var[String], done: Var[Boolean])
 object ScalaJSExample {
   import Framework._
+
+  val editing = Var[Option[Task]](None)
 
   val tasks = Var(
     Seq(
@@ -33,7 +36,6 @@ object ScalaJSExample {
     autofocus:=true
   ))
 
-  val editing = Var[Option[Task]](None)
 
   def main(): Unit = {
     dom.document.body.innerHTML = Seq(
@@ -55,14 +57,14 @@ object ScalaJSExample {
             cursor:="pointer",
             onclick <~ {
               val target = tasks().exists(_.done() == false)
-              tasks().map(_.done() = target)
+              Var.set(tasks().map(_.done ~> target): _*)
             }
           ),
           label(`for`:="toggle-all", "Mark all as complete"),
           Rx{
             dom.console.log("A")
             ul(id:="todo-list")(
-              for(task <- tasks() if filters(filter())(task)) yield Rx{
+              for(task <- tasks() if filters(filter())(task)) yield {
                 dom.console.log("B", task.txt())
                 val inputRef = new DomRef[dom.HTMLInputElement](
                   input(`class`:="edit", value:=task.txt())
@@ -77,7 +79,7 @@ object ScalaJSExample {
                       onchange <~ {task.done() = !task.done()},
                       if(task.done()) checked:=true else ()
                     ),
-                    label(Rx(task.txt())),
+                    label(task.txt()),
                     button(
                       `class`:="destroy",
                       cursor:="pointer",
