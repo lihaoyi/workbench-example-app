@@ -16,9 +16,9 @@ object ScalaJSExample {
 
   val tasks = Var(
     Seq(
-      Task(Var("Create a TodoMVC template D"), Var(true)),
-      Task(Var("Create a TodoMVC template B"), Var(false)),
-      Task(Var("Create a TodoMVC template C"), Var(false))
+      Task(Var("TodoMVC Task A"), Var(true)),
+      Task(Var("TodoMVC Task B"), Var(false)),
+      Task(Var("TodoMVC Task C"), Var(false))
     )
   )
 
