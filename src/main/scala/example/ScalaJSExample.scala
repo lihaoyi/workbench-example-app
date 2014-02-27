@@ -19,7 +19,7 @@ object ScalaJSExample {
   var startTime = js.Date.now()
 
   val canvas = dom.document
-                  .getElementById("triangle-canvas")
+                  .getElementById("canvas")
                   .asInstanceOf[dom.HTMLCanvasElement]
   val ctx = canvas.getContext("2d")
                   .asInstanceOf[dom.CanvasRenderingContext2D]
