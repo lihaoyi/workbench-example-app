@@ -1,7 +1,7 @@
 // Turn this project into a Scala.js project by importing these settings
 import scala.scalajs.sbtplugin.ScalaJSPlugin._
 import ScalaJSKeys._
-import scala.js.workbench.Plugin._
+import com.lihaoyi.workbench.Plugin._
 
 scalaJSSettings
 

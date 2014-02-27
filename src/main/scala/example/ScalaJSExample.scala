@@ -10,7 +10,7 @@ case class Point(x: Int, y: Int){
 
 object ScalaJSExample {
   val ctx = dom.document
-    .getElementById("triangle-canvas")
+    .getElementById("canvas")
     .asInstanceOf[dom.HTMLCanvasElement]
     .getContext("2d")
     .asInstanceOf[dom.CanvasRenderingContext2D]
