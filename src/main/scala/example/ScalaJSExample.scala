@@ -14,7 +14,7 @@ case class Point(x: Double, y: Double){
 object ScalaJSExample {
   val canvas =
     dom.document
-       .getElementById("triangle-canvas")
+       .getElementById("canvas")
        .asInstanceOf[dom.HTMLCanvasElement]
 
   val ctx =
