@@ -93,15 +93,16 @@ object Framework {
     class CallbackModifier(a: Attr, func: () => Unit) extends Modifier{
       def transform(tag: HtmlTag): HtmlTag = {
         val elemId = tag.attrs.getOrElse("id", ""+Random.nextInt())
-
+        val funcName = a.name + "Func"
+            
         dom.setTimeout(() => {
           val target = dom.document
                           .getElementById(elemId)
                           .asInstanceOf[js.Dynamic]
           if (target != null)
-            target.func = func: js.Function0[Unit]
+            target.updateDynamic(funcName)(func: js.Function0[Unit])
         }, 10)
-        tag(id:=elemId, a:=s"this.func(); return false;")
+        tag(id:=elemId, a:=s"this.$funcName(); return false;")
       }
     }
     def <~ (func: => Unit) = new CallbackModifier(a, () => func)
