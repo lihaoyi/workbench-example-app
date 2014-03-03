@@ -1,11 +1,10 @@
 // Turn this project into a Scala.js project by importing these settings
 import scala.scalajs.sbtplugin.ScalaJSPlugin._
 import ScalaJSKeys._
-import com.lihaoyi.workbench.Plugin._
 
 scalaJSSettings
 
-buildSettingsX
+workbenchSettings
 
 name := "Example"
 
@@ -18,10 +17,6 @@ libraryDependencies ++= Seq(
 // Specify additional .js file to be passed to package-js and optimize-js
 unmanagedSources in (Compile, ScalaJSKeys.packageJS) +=
     baseDirectory.value / "js" / "startup.js"
-
-ScalaJSKeys.packageJS in Compile := {
-  (ScalaJSKeys.packageJS in Compile).value :+ generateClient.value
-}
 
 bootSnippet := "ScalaJS.modules.example_ScalaJSExample().main();"
 
