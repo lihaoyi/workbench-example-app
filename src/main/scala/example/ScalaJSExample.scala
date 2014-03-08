@@ -10,6 +10,7 @@ import rx.core.Propagator
 
 case class Task(txt: Var[String], done: Var[Boolean])
 object ScalaJSExample {
+
   import Framework._
 
   val editing = Var[Option[Task]](None)
