@@ -58,7 +58,7 @@ object ScalaJSExample {
             cursor:="pointer",
             onclick <~ {
               val target = tasks().exists(_.done() == false)
-              Var.set(tasks().map(_.done ~> target): _*)
+              Var.set(tasks().map(_.done -> target): _*)
             }
           ),
           label(`for`:="toggle-all", "Mark all as complete"),

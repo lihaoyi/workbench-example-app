@@ -16,12 +16,6 @@ import scalatags.HtmlTag
  * A minimal binding between Scala.Rx and Scalatags and Scala-Js-Dom
  */
 object Framework {
-  /**
-   * Lets you put Unit into a scalatags tree, as a no-op.
-   */
-  implicit def UnitModifier(u: Unit) = new scalatags.Modifier{
-    def transform(t: scalatags.HtmlTag) = t
-  }
 
   /**
    * Wraps reactive strings in spans, so they can be referenced/replaced
@@ -108,20 +102,4 @@ object Framework {
     def <~ (func: => Unit) = new CallbackModifier(a, () => func)
   }
 
-  class StagedSet[T](val pair: (Var[T], T)){
-    def set() = {
-      pair._1.updateSilent(pair._2)
-    }
-  }
-  implicit class Stager[T](val v: Var[T]){
-    def ~>(t: T) = new StagedSet(v, t)
-  }
-  implicit class Multisetable(v: Var.type){
-    def set[P: Propagator](stages: StagedSet[_]*) = {
-      stages.foreach(_.set())
-      Propagator().propagate(
-        stages.flatMap( s => s.pair._1.children.map(s.pair._1 -> _)).toSet
-      )
-    }
-  }
 }
