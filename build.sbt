@@ -21,6 +21,6 @@ libraryDependencies ++= Seq(
 unmanagedSources in (Compile, ScalaJSKeys.packageJS) +=
   baseDirectory.value / "js" / "startup.js"
 
-bootSnippet := "ScalaJS.modules.example_ScalaJSExample().main();"
+bootSnippet := "ScalaJS.modules.example_ScalaJSExample().main__V();"
 
 updateBrowsers <<= updateBrowsers.triggeredBy(ScalaJSKeys.packageJS in Compile)
