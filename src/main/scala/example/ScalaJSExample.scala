@@ -2,6 +2,7 @@ package example
 
 import org.scalajs.dom
 
+import scala.scalajs.js.annotation.JSExport
 
 case class Point(x: Double, y: Double){
   def +(p: Point) = Point(x + p.x, y + p.y)
@@ -11,6 +12,7 @@ case class Point(x: Double, y: Double){
   def length = Math.sqrt(x * x + y * y)
 }
 
+@JSExport
 object ScalaJSExample {
   val canvas =
     dom.document
@@ -92,6 +94,7 @@ object ScalaJSExample {
   }
 
   val keysDown = collection.mutable.Set.empty[Int]
+  @JSExport
   def main(): Unit = {
 
     dom.console.log("main")
