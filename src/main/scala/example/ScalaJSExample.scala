@@ -6,9 +6,11 @@ import scalatags.Tags2.section
 import scalatags.ExtendedString
 import rx._
 import rx.core.Propagator
+import scala.scalajs.js.annotation.JSExport
 
 
 case class Task(txt: Var[String], done: Var[Boolean])
+@JSExport
 object ScalaJSExample {
 
   import Framework._
@@ -37,7 +39,7 @@ object ScalaJSExample {
     autofocus:=true
   ))
 
-
+  @JSExport
   def main(): Unit = {
     dom.document.body.innerHTML = Seq(
       section(id:="todoapp")(
