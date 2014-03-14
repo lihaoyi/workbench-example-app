@@ -1,5 +1,5 @@
 package example
-
+import scala.scalajs.js.annotation.JSExport
 import org.scalajs.dom
 import scala.util.Random
 
@@ -8,6 +8,7 @@ case class Point(x: Int, y: Int){
   def /(d: Int) = Point(x / d, y / d)
 }
 
+@JSExport
 object ScalaJSExample {
   val ctx = dom.document
     .getElementById("canvas")
@@ -20,7 +21,7 @@ object ScalaJSExample {
   val corners = Seq(Point(255, 255), Point(0, 255), Point(128, 0))
 
   def clear() = {
-    ctx.fillStyle = "black"
+    ctx.fillStyle = "white"
     ctx.fillRect(0, 0, 255, 255)
   }
 
@@ -36,7 +37,7 @@ object ScalaJSExample {
 
     ctx.fillRect(p.x, p.y, 1, 1)
   }
-
+  @JSExport
   def main(): Unit = {
     dom.console.log("main")
 
