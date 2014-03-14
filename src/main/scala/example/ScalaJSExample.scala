@@ -3,7 +3,7 @@ package example
 import org.scalajs.dom
 import scala.util.Random
 import scala.scalajs.js
-
+import js.annotation.JSExport
 case class Point(x: Double, y: Double){
   def +(p: Point) = Point(x + p.x, y + p.y)
   def -(p: Point) = Point(x - p.x, y - p.y)
@@ -13,7 +13,7 @@ case class Point(x: Double, y: Double){
 }
 
 class Enemy(var pos: Point, var vel: Point)
-
+@JSExport
 object ScalaJSExample {
 
   var startTime = js.Date.now()
@@ -92,6 +92,7 @@ object ScalaJSExample {
         }
     }
   }
+  @JSExport
   def main(): Unit = {
     dom.console.log("main")
 

@@ -15,10 +15,6 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules.scalajs" %% "scalajs-dom" % "0.3"
 )
 
-// Specify additional .js file to be passed to package-js and optimize-js
-unmanagedSources in (Compile, ScalaJSKeys.packageJS) +=
-    baseDirectory.value / "js" / "startup.js"
-
-bootSnippet := "ScalaJS.modules.example_ScalaJSExample().main__V();"
+bootSnippet := "ScalaJSExample().main();"
 
 updateBrowsers <<= updateBrowsers.triggeredBy(ScalaJSKeys.packageJS in Compile)
