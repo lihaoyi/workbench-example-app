@@ -35,3 +35,7 @@ There's also a `space-invaders` branch, also made in 30 minutes, with its own
 The `todomvc` branch contains an implementation of the [TodoMVC example application](http://todomvc.com/), which is used to compare how the exact same application would be implemented using different languages and frameworks. This application makes heavy use of [Scalatags](https://github.com/lihaoyi/scalatags) and [Scala.Rx](https://github.com/lihaoyi/scala.rx), with heavy use of the DOM via [scala-js-dom](https://github.com/scala-js/scala-js-dom), making it a good example of how reactive web pages could be built using ScalaJS, as well as use of standalone ScalaJS libraries.
 
 The same steps are used to develop (`sbt ~packageJS`) and optimize (`sbt optimizeJS`) this app, and a live demo can be seen [here](http://lihaoyi.github.io/workbench-example-app/todo.html).
+
+## Ray Tracer
+
+The `ray-tracer` branch contains a simple ray-tracer written using Scala.js, with a [live demo](http://lihaoyi.github.io/workbench-example-app/raytracer.html).
