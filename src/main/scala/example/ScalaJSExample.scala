@@ -149,7 +149,7 @@ case class Plane(point: Vec, normal: Vec.Unit) extends Form{
 case class Ray(point: Vec, vector: Vec.Unit){
   def pointAtTime(t: Double) = point + vector * t
 }
-case class Light(center: Vec, color: Vec)
+case class Light(center: Vec, color: Color)
 abstract class Surface{
   def baseColorAt(p: Vec): Color
   def specularC: Double
