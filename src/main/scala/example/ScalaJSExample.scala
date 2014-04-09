@@ -30,15 +30,15 @@ object ScalaJSExample {
                   .getElementById("canvas")
                   .asInstanceOf[dom.HTMLCanvasElement]
 
-  canvas.width = 512
-  canvas.height = 512
+  canvas.width = 1024
+  canvas.height = 1024
 
   val ctx = canvas.getContext("2d")
                   .asInstanceOf[dom.CanvasRenderingContext2D]
 
   @JSExport
   def main(): Unit = {
-
+    val r = new util.Random(16314302)
     val spiral = for (i <- 0 until 11) yield {
       val theta = i * (i + 5) * Pi / 100 + 0.3
       val center = (0 - 4 * sin(theta), 1.5 - i / 2.0, 0 - 4 * cos(theta))
@@ -46,6 +46,18 @@ object ScalaJSExample {
       val surface = Flat((i / 6.0, 1 - i / 6.0, 0.5))
       (form, surface)
     }
+
+    def rand(d: Double) = (r.nextDouble() - 0.5) * d * 2
+
+    val drops = Array(
+      Sphere((2.5, 2.5, -8), 0.3),
+      Sphere((1.5, 2.2, -7), 0.25),
+      Sphere((-1.3, 0.8, -8.5), 0.15),
+      Sphere((0.5, -2.5, -7.5), 0.2),
+      Sphere((-1.8, 2.3, -7.5), 0.3),
+      Sphere((-1.8, -2.3, -7.5), 0.3),
+      Sphere((1.3, 0.0, -8), 0.25)
+    ).map(_ -> Refractor())
 
     val s = new Scene(
       objects = Array(
@@ -55,7 +67,7 @@ object ScalaJSExample {
         Plane((6, 0, 0), (1, 0, 0)) -> Flat((1, 0.9, 1)),
         Plane((-6, 0, 0), (1, 0, 0)) -> Flat((1, 1, 0.9)),
         Plane((0, 0, 6), (0, 0, 1)) -> Flat((0.9, 0.9, 1))
-      ) ++ spiral,
+      ) ++ spiral ++ drops,
       lightPoints = Array(
         Light((0, -3, 0), (3, 3, 0)),
         Light((3, 3, 0), (0, 3, 3)),
@@ -151,11 +163,14 @@ case class Ray(point: Vec, vector: Vec.Unit){
 }
 case class Light(center: Vec, color: Color)
 abstract class Surface{
+  def colorAt(scene: Scene, ray: Ray, p: Vec, normal: Vec.Unit, depth: Int): Color
+}
+abstract class SolidSurface extends Surface{
   def baseColorAt(p: Vec): Color
   def specularC: Double
   def lambertC: Double
   val ambientC = 1.0 - specularC - lambertC
-  def colorAt(scene: Scene, ray: Ray, p: Vec, normal: Vec, depth: Int): Color = {
+  def colorAt(scene: Scene, ray: Ray, p: Vec, normal: Vec.Unit, depth: Int): Color = {
     val b = baseColorAt(p)
 
     val specular = {
@@ -184,9 +199,30 @@ abstract class Surface{
     specular + lambert + ambient
   }
 }
+case class Refractor(refractiveIndex: Double = 0.5) extends Surface{
+  def colorAt(scene: Scene, ray: Ray, p: Vec, normal: Vec.Unit, depth: Int): Color = {
+    val r = if ((normal dot ray.vector) < 0)
+      refractiveIndex
+    else
+      1.0 / refractiveIndex
+
+    val c = (normal * -1) dot ray.vector
+
+    val sqrtValue = 1 - r * r * (1 - c * c)
+
+    if (sqrtValue > 0){
+      val refracted = ray.vector * r + normal * (r * c - sqrt(sqrtValue))
+      scene.rayColor(Ray(p, refracted), depth)
+    }else{
+      val perp = ray.vector dot normal
+      val reflected: Vec = Vec.denormalizer(ray.vector) + normal * 2 * perp
+      scene.rayColor(Ray(p, reflected), depth)
+    }
+  }
+}
 case class Flat(baseColor: Color = Color(1, 1, 1),
                 specularC: Double = 0.3,
-                lambertC: Double = 0.6) extends Surface{
+                lambertC: Double = 0.6) extends SolidSurface{
 
   def baseColorAt(p: Vec) = baseColor
 
@@ -195,7 +231,7 @@ case class Checked(baseColor: Color = Color(1, 1, 1),
                    specularC: Double = 0.3,
                    lambertC: Double = 0.6,
                    otherColor: Color = (0, 0, 0),
-                   checkSize: Double = 1) extends Surface{
+                   checkSize: Double = 1) extends SolidSurface{
   override def baseColorAt(p: Vec) = {
     val v = p * (1.0 / checkSize)
 
