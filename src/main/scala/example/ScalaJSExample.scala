@@ -61,7 +61,7 @@ object ScalaJSExample {
 
     val s = new Scene(
       objects = Array(
-        Sphere((0, 0, 0), 2) -> Flat((1, 1, 1)),
+        Sphere((0, 0, 0), 2) -> Flat((1, 1, 1), specularC = 0.6, lambertC = 0.4),
         Plane((0, 4, 0), (0, 1, 0)) -> Checked(),
         Plane((0, -4, 0), (0, 1, 0)) -> Flat((0.9, 1, 1)),
         Plane((6, 0, 0), (1, 0, 0)) -> Flat((1, 0.9, 1)),
