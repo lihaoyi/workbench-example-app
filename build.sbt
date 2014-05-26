@@ -12,9 +12,9 @@ name := "Example"
 version := "0.1-SNAPSHOT"
 
 libraryDependencies ++= Seq(
-  "org.scala-lang.modules.scalajs" %% "scalajs-dom" % "0.3"
+  "org.scala-lang.modules.scalajs" %% "scalajs-dom" % "0.4"
 )
 
 bootSnippet := "ScalaJSExample().main();"
 
-updateBrowsers <<= updateBrowsers.triggeredBy(ScalaJSKeys.packageJS in Compile)
+updateBrowsers <<= updateBrowsers.triggeredBy(ScalaJSKeys.fastOptJS in Compile)
