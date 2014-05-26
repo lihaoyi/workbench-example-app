@@ -89,7 +89,7 @@ object ScalaJSExample {
       }
 
       def plot(x: Int, y: Int, rgb: ScalaJSExample.Color): Unit = {
-        val index = (y * data.width + x) * 4
+        val index = (y * data.width.toInt + x) * 4
         data.data(index+0) = (rgb.x * 255).toInt
         data.data(index+1) = (rgb.y * 255).toInt
         data.data(index+2) = (rgb.z * 255).toInt
@@ -301,7 +301,7 @@ class Scene(objects: Array[(Form, Surface)],
     val vpUp = vpRight.cross(eye.vector).normalized
 
     for(y <- 0 until canvas.height optimized){
-      await(Future())
+      if (y % 2 == 0) await(Future())
       canvas.save(y)
       for (x <- 0 until canvas.width optimized){
         val xcomp = vpRight * (x * pixelWidth - halfWidth)
