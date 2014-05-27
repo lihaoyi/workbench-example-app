@@ -1,16 +1,14 @@
 package example
 
-import scala.collection.mutable
-import scalatags.{HtmlTag, Attr, Modifier}
+import scala.collection.{SortedMap, mutable}
+import scalatags._
 import scala.util.Random
 import scalatags.all._
-import scalatags.HtmlTag
 import rx._
 import rx.core.{Propagator, Obs}
 import org.scalajs.dom
 import org.scalajs.dom.DOMParser
 import scala.scalajs.js
-import scalatags.HtmlTag
 
 /**
  * A minimal binding between Scala.Rx and Scalatags and Scala-Js-Dom
@@ -31,9 +29,9 @@ object Framework {
    */
   class DomRef[T](r0: HtmlTag) extends Modifier{
     val elemId = r0.attrs.getOrElse("id", ""+Random.nextInt())
-    val r = r0(id := elemId)
-    def transform(tag: HtmlTag): HtmlTag = {
-      tag(r)
+
+    override def transforms = {
+      Array((children, attrs) => Mod.Attr("id", elemId))
     }
   }
 
@@ -68,12 +66,8 @@ object Framework {
       target.asInstanceOf[js.Dynamic].obs = obs.asInstanceOf[js.Dynamic]
     }, 10)
 
-    def transform(tag: HtmlTag): HtmlTag = {
-      tag(
-        r.now(
-          id := elemId
-        )
-      )
+    override def transforms = {
+      Array((children, attrs) => Mod.Attr("id", elemId))
     }
   }
 
@@ -85,18 +79,24 @@ object Framework {
    */
   implicit class Transformable(a: Attr){
     class CallbackModifier(a: Attr, func: () => Unit) extends Modifier{
-      def transform(tag: HtmlTag): HtmlTag = {
-        val elemId = tag.attrs.getOrElse("id", ""+Random.nextInt())
-        val funcName = a.name + "Func"
-            
-        dom.setTimeout(() => {
-          val target = dom.document
-                          .getElementById(elemId)
-                          .asInstanceOf[js.Dynamic]
-          if (target != null)
-            target.updateDynamic(funcName)(func: js.Function0[Unit])
-        }, 10)
-        tag(id:=elemId, a:=s"this.$funcName(); return false;")
+      override def transforms = {
+
+        Array(
+          (children, attrs) => Mod.Attr("id", attrs.getOrElse("id", ""+Random.nextInt())),
+          (children, attrs) => {
+            val elemId = attrs("id")
+            val funcName = a.name + "Func"
+
+            dom.setTimeout(() => {
+              val target = dom.document
+                .getElementById(elemId)
+                .asInstanceOf[js.Dynamic]
+              if (target != null)
+                target.updateDynamic(funcName)(func: js.Function0[Unit])
+            }, 10)
+            Mod.Attr(a.name, s"this.$funcName(); return false;")
+          }
+        )
       }
     }
     def <~ (func: => Unit) = new CallbackModifier(a, () => func)
