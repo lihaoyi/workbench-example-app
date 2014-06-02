@@ -63,11 +63,9 @@ object Framework {
    */
   implicit def rxMod[T <: dom.HTMLElement](r: Rx[TypedHtmlTag[T]]): Modifier = {
     var last: dom.HTMLElement = render(r())
-    dom.console.log("A")
-    lazy val obs: Obs = Obs(r, skipInitial = true){
-      dom.console.log("B")
+    val obs = Obs(r, skipInitial = true){
       val newLast = render(r())
-      last.parentElement.replaceChild(last, newLast)
+      last.parentElement.replaceChild(newLast, last)
       last = newLast
     }
     new DomMod(last)
@@ -83,6 +81,6 @@ object Framework {
     class CallbackModifier(a: Attr, func: () => Unit) extends Modifier{
       override def transforms = Array(Mod.Attr(a.name, func))
     }
-    def apply (func: => Unit) = new CallbackModifier(a, () => func)
+    def apply(func: => Unit) = new CallbackModifier(a, () => func)
   }
 }
