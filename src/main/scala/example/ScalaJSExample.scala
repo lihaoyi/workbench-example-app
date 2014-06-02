@@ -109,18 +109,17 @@ object ScalaJSExample {
           },
           footer(id:="footer")(
             span(id:="todo-count")(strong(Rx(tasks().count(!_.done()).toString)), " item left"),
-            Rx{
-              ul(id:="filters")(
-                for ((name, pred) <- filters.toSeq) yield {
-                  li(a(
-                    if(name == filter()) `class`:="selected" else (),
-                    name,
-                    href:="#",
-                    onclick(filter() = name)
-                  ))
-                }
-              )
-            },
+
+            ul(id:="filters")(
+              for ((name, pred) <- filters.toSeq) yield {
+                li(a(
+                  `class`:=Rx{if(name == filter()) "selected" else ()},
+                  name,
+                  href:="#",
+                  onclick(filter() = name)
+                ))
+              }
+            ),
             button(
               id:="clear-completed",
               onclick{tasks() = tasks().filter(!_.done())},

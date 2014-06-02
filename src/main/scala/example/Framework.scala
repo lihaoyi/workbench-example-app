@@ -15,19 +15,23 @@ import scala.scalajs.js
  */
 object Framework {
 
+  case class Box(t: js.Any)
   def render[T <: dom.HTMLElement](t: TypedHtmlTag[T]): T = {
     val elem = dom.document.createElement(t.tag).asInstanceOf[T]
-    val moddedAttrs = t.collapsedAttrs
-
-    moddedAttrs.foreach{
-      case (k, x: Function0[_]) =>
-        dom.console.log("F0")
-        elem.asInstanceOf[js.Dynamic].updateDynamic(k)(x)
-      case (k, x: Function1[_, _]) =>
-        dom.console.log("F1")
-        elem.asInstanceOf[js.Dynamic].updateDynamic(k)(x)
+    def handle(k: String, v: Any) = (k, v) match {
+      case (k, Box(v)) => elem.asInstanceOf[js.Dynamic].updateDynamic(k)(v)
       case (k, v) => elem.setAttribute(k, v.toString)
     }
+    t.attrs.foreach{
+      case (k, r: Rx[_]) =>  Obs(r)(handle(k, r()))
+      case (k, v) => handle(k, v)
+    }
+
+    t.styles.foreach{
+      case (k, x: Rx[_]) => Obs(x){elem.style.setProperty(k.jsName, x().toString)}
+      case (k, s) => elem.style.setProperty(k.jsName, s.toString)
+    }
+
     t.children.reverse.foreach{
       case d: DomMod => elem.appendChild(d.r)
       case t: TypedHtmlTag[`dom`.HTMLElement] => elem.appendChild(render(t))
@@ -79,7 +83,7 @@ object Framework {
    */
   implicit class Transformable(a: Attr){
     class CallbackModifier(a: Attr, func: () => Unit) extends Modifier{
-      override def transforms = Array(Mod.Attr(a.name, func))
+      override def transforms = Array(Mod.Attr(a.name, Box(func)))
     }
     def apply(func: => Unit) = new CallbackModifier(a, () => func)
   }
