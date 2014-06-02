@@ -38,7 +38,7 @@ object ScalaJSExample {
 
   val filter = Var("All")
 
-  val inputBox: dom.HTMLInputElement = render(input(
+  val inputBox = render(input(
     id:="new-todo",
     placeholder:="What needs to be done?",
     autofocus:=true
