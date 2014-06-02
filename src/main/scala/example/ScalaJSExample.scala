@@ -3,16 +3,21 @@ package example
 import org.scalajs.dom
 import scalatags.all._
 import scalatags.Tags2.section
-import scalatags.ExtendedString
+import scalatags._
 import rx._
 import rx.core.Propagator
 import scala.scalajs.js.annotation.JSExport
+import example.Framework.DomMod
+import scalatags.TypedHtmlTag
+import example.Framework.DomMod
+import scala.Some
+import scalatags.StringNode
+import scala.scalajs.js
 
 
 case class Task(txt: Var[String], done: Var[Boolean])
 @JSExport
 object ScalaJSExample {
-
   import Framework._
 
   val editing = Var[Option[Task]](None)
@@ -25,7 +30,7 @@ object ScalaJSExample {
     )
   )
 
-  val filters: Map[String, Task => Boolean] = Map(
+  val filters = Map[String, Task => Boolean](
     ("All", t => true),
     ("Active", !_.done()),
     ("Completed", _.done())
@@ -33,7 +38,7 @@ object ScalaJSExample {
 
   val filter = Var("All")
 
-  val inputBox = new DomRef[dom.HTMLInputElement](input(
+  val inputBox: dom.HTMLInputElement = render(input(
     id:="new-todo",
     placeholder:="What needs to be done?",
     autofocus:=true
@@ -41,13 +46,13 @@ object ScalaJSExample {
 
   @JSExport
   def main(): Unit = {
-    dom.document.body.innerHTML = Seq(
+    dom.document.body.appendChild(render(
       section(id:="todoapp")(
         header(id:="header")(
           h1("todos"),
           form(
             inputBox,
-            onsubmit <~ {
+            onsubmit{
               tasks() = Task(Var(inputBox.value), Var(false)) +: tasks()
               inputBox.value = ""
             }
@@ -58,39 +63,41 @@ object ScalaJSExample {
             id:="toggle-all",
             `type`:="checkbox",
             cursor:="pointer",
-            onclick <~ {
+            onclick{
               val target = tasks().exists(_.done() == false)
               Var.set(tasks().map(_.done -> target): _*)
             }
           ),
           label(`for`:="toggle-all", "Mark all as complete"),
-          Rx{
-            dom.console.log("A")
-            ul(id:="todo-list")(
-              for(task <- tasks() if filters(filter())(task)) yield {
-                dom.console.log("B", task.txt())
-                val inputRef = new DomRef[dom.HTMLInputElement](
-                  input(`class`:="edit", value:=task.txt())
+          Rx {
+            ul(id := "todo-list")(
+              for (task <- tasks() if filters(filter())(task)) yield {
+                val inputRef: dom.HTMLInputElement = render(
+                  input(`class` := "edit", value := task.txt())
                 )
-                li(if(task.done()) `class`:="completed" else (), if(editing() == Some(task)) `class`:="editing" else ())(
-                  div(`class`:="view")(
-                    "ondblclick".attr <~ {editing() = Some(task)},
+                li(if (task.done()) `class` := "completed" else (), if (editing() == Some(task)) `class` := "editing" else ())(
+                  div(`class` := "view")(
+                    "ondblclick".attr {
+                      editing() = Some(task)
+                    },
                     input(
-                      `class`:="toggle",
-                      `type`:="checkbox",
-                      cursor:="pointer",
-                      onchange <~ {task.done() = !task.done()},
-                      if(task.done()) checked:=true else ()
+                      `class` := "toggle",
+                      `type` := "checkbox",
+                      cursor := "pointer",
+                      onchange {
+                        task.done() = !task.done()
+                      },
+                      if (task.done()) checked := true else ()
                     ),
                     label(task.txt()),
                     button(
-                      `class`:="destroy",
-                      cursor:="pointer",
-                      onclick <~ (tasks() = tasks().filter(_ != task))
+                      `class` := "destroy",
+                      cursor := "pointer",
+                      onclick(tasks() = tasks().filter(_ != task))
                     )
                   ),
                   form(
-                    onsubmit <~ {
+                    onsubmit {
                       task.txt() = inputRef.value
                       editing() = None
                     },
@@ -109,14 +116,14 @@ object ScalaJSExample {
                     if(name == filter()) `class`:="selected" else (),
                     name,
                     href:="#",
-                    onclick <~ (filter() = name)
+                    onclick(filter() = name)
                   ))
                 }
               )
             },
             button(
               id:="clear-completed",
-              onclick <~ {tasks() = tasks().filter(!_.done())},
+              onclick{tasks() = tasks().filter(!_.done())},
               "Clear completed (", Rx(tasks().count(_.done()).toString), ")"
             )
           )
@@ -127,6 +134,6 @@ object ScalaJSExample {
           p("Created by ", a(href:="http://github.com/lihaoyi")("Li Haoyi"))
         )
       )
-    ).mkString
+    ))
   }
 }
