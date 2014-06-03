@@ -5,6 +5,7 @@ import scalatags.all._
 import scalatags.Tags2.section
 import scalatags._
 import rx._
+import rx.ops._
 import rx.core.Propagator
 import scala.scalajs.js.annotation.JSExport
 import example.Framework.DomMod
@@ -15,7 +16,9 @@ import scalatags.StringNode
 import scala.scalajs.js
 
 
-case class Task(txt: Var[String], done: Var[Boolean])
+case class Task(txt: Var[String], done: Var[Boolean]){
+
+}
 @JSExport
 object ScalaJSExample {
   import Framework._
@@ -35,6 +38,10 @@ object ScalaJSExample {
     ("Active", !_.done()),
     ("Completed", _.done())
   )
+
+  val done = Rx{tasks().count(_.done())}
+
+  val notDone = Rx{tasks().length - done()}
 
   val filter = Var("All")
 
@@ -75,7 +82,11 @@ object ScalaJSExample {
                 val inputRef: dom.HTMLInputElement = render(
                   input(`class` := "edit", value := task.txt())
                 )
-                li(if (task.done()) `class` := "completed" else (), if (editing() == Some(task)) `class` := "editing" else ())(
+                li(
+                  `class` := Rx{
+                    if (task.done()) "completed"
+                    else if (editing() == Some(task)) "editing"
+                  },
                   div(`class` := "view")(
                     "ondblclick".attr {
                       editing() = Some(task)
@@ -87,7 +98,7 @@ object ScalaJSExample {
                       onchange {
                         task.done() = !task.done()
                       },
-                      if (task.done()) checked := true else ()
+                      if (task.done()) checked := true
                     ),
                     label(task.txt()),
                     button(
@@ -108,12 +119,14 @@ object ScalaJSExample {
             )
           },
           footer(id:="footer")(
-            span(id:="todo-count")(strong(Rx(tasks().count(!_.done()).toString)), " item left"),
+            span(id:="todo-count")(strong(notDone), " item left"),
 
             ul(id:="filters")(
               for ((name, pred) <- filters.toSeq) yield {
                 li(a(
-                  `class`:=Rx{if(name == filter()) "selected" else ()},
+                  `class`:=Rx{
+                    if(name == filter()) "selected"
+                  },
                   name,
                   href:="#",
                   onclick(filter() = name)
@@ -123,7 +136,7 @@ object ScalaJSExample {
             button(
               id:="clear-completed",
               onclick{tasks() = tasks().filter(!_.done())},
-              "Clear completed (", Rx(tasks().count(_.done()).toString), ")"
+              "Clear completed (", done, ")"
             )
           )
         ),

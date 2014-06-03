@@ -48,7 +48,7 @@ object Framework {
    * Wraps reactive strings in spans, so they can be referenced/replaced
    * when the Rx changes.
    */
-  implicit def RxStr(r: Rx[String]): Modifier = {
+  implicit def RxStr[T](r: Rx[T])(implicit f: T => Modifier): Modifier = {
     rxMod(Rx(span(r())))
   }
 
@@ -66,8 +66,8 @@ object Framework {
    * the element leaves the DOM (e.g. it gets deleted).
    */
   implicit def rxMod[T <: dom.HTMLElement](r: Rx[TypedHtmlTag[T]]): Modifier = {
-    var last: dom.HTMLElement = render(r())
-    val obs = Obs(r, skipInitial = true){
+    var last = render(r())
+    Obs(r, skipInitial = true){
       val newLast = render(r())
       last.parentElement.replaceChild(newLast, last)
       last = newLast
