@@ -1,19 +1,12 @@
 package example
 
 import org.scalajs.dom
-import scalatags.all._
-import scalatags.Tags2.section
-import scalatags._
+import scalatags.JsDom._
+import all._
+import tags2.section
 import rx._
-import rx.ops._
-import rx.core.Propagator
 import scala.scalajs.js.annotation.JSExport
-import example.Framework.DomMod
-import scalatags.TypedHtmlTag
-import example.Framework.DomMod
 import scala.Some
-import scalatags.StringNode
-import scala.scalajs.js
 
 
 case class Task(txt: Var[String], done: Var[Boolean]){
@@ -45,21 +38,21 @@ object ScalaJSExample {
 
   val filter = Var("All")
 
-  val inputBox = render(input(
+  val inputBox = input(
     id:="new-todo",
     placeholder:="What needs to be done?",
     autofocus:=true
-  ))
+  ).toDom
 
   @JSExport
   def main(): Unit = {
-    dom.document.body.appendChild(render(
+    dom.document.body.appendChild(
       section(id:="todoapp")(
         header(id:="header")(
           h1("todos"),
           form(
             inputBox,
-            onsubmit{
+            onsubmit := { () =>
               tasks() = Task(Var(inputBox.value), Var(false)) +: tasks()
               inputBox.value = ""
             }
@@ -70,7 +63,7 @@ object ScalaJSExample {
             id:="toggle-all",
             `type`:="checkbox",
             cursor:="pointer",
-            onclick{
+            onclick := { () =>
               val target = tasks().exists(_.done() == false)
               Var.set(tasks().map(_.done -> target): _*)
             }
@@ -79,23 +72,23 @@ object ScalaJSExample {
           Rx {
             ul(id := "todo-list")(
               for (task <- tasks() if filters(filter())(task)) yield {
-                val inputRef: dom.HTMLInputElement = render(
-                  input(`class` := "edit", value := task.txt())
-                )
+                val inputRef = input(`class` := "edit", value := task.txt()).toDom
+
                 li(
                   `class` := Rx{
                     if (task.done()) "completed"
                     else if (editing() == Some(task)) "editing"
+                    else ""
                   },
                   div(`class` := "view")(
-                    "ondblclick".attr {
+                    "ondblclick".attr := { () =>
                       editing() = Some(task)
                     },
                     input(
                       `class` := "toggle",
                       `type` := "checkbox",
                       cursor := "pointer",
-                      onchange {
+                      onchange := { () =>
                         task.done() = !task.done()
                       },
                       if (task.done()) checked := true
@@ -104,11 +97,11 @@ object ScalaJSExample {
                     button(
                       `class` := "destroy",
                       cursor := "pointer",
-                      onclick(tasks() = tasks().filter(_ != task))
+                      onclick := { () =>tasks() = tasks().filter(_ != task) }
                     )
                   ),
                   form(
-                    onsubmit {
+                    onsubmit := { () =>
                       task.txt() = inputRef.value
                       editing() = None
                     },
@@ -126,16 +119,17 @@ object ScalaJSExample {
                 li(a(
                   `class`:=Rx{
                     if(name == filter()) "selected"
+                    else ""
                   },
                   name,
                   href:="#",
-                  onclick(filter() = name)
+                  onclick := {() => filter() = name}
                 ))
               }
             ),
             button(
               id:="clear-completed",
-              onclick{tasks() = tasks().filter(!_.done())},
+              onclick := { () => tasks() = tasks().filter(!_.done()) },
               "Clear completed (", done, ")"
             )
           )
@@ -145,7 +139,7 @@ object ScalaJSExample {
           p(a(href:="https://github.com/lihaoyi/workbench-example-app/blob/todomvc/src/main/scala/example/ScalaJSExample.scala")("Source Code")),
           p("Created by ", a(href:="http://github.com/lihaoyi")("Li Haoyi"))
         )
-      )
-    ))
+      ).toDom
+    )
   }
 }
