@@ -55,6 +55,7 @@ object ScalaJSExample {
             onsubmit := { () =>
               tasks() = Task(Var(inputBox.value), Var(false)) +: tasks()
               inputBox.value = ""
+              false
             }
           )
         ),
@@ -104,6 +105,7 @@ object ScalaJSExample {
                     onsubmit := { () =>
                       task.txt() = inputRef.value
                       editing() = None
+                      false
                     },
                     inputRef
                   )
