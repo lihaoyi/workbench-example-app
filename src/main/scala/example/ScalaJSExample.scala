@@ -141,7 +141,7 @@ object ScalaJSExample {
           p(a(href:="https://github.com/lihaoyi/workbench-example-app/blob/todomvc/src/main/scala/example/ScalaJSExample.scala")("Source Code")),
           p("Created by ", a(href:="http://github.com/lihaoyi")("Li Haoyi"))
         )
-      ).toDom
+      ).render
     )
   }
 }
