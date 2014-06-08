@@ -2,7 +2,7 @@ package example
 
 import scala.collection.{SortedMap, mutable}
 import scalatags.JsDom._
-import scala.util.Random
+import scala.util.{Failure, Success, Random}
 import all._
 import rx._
 import rx.core.{Propagator, Obs}
@@ -31,9 +31,13 @@ object Framework {
    * the element leaves the DOM (e.g. it gets deleted).
    */
   implicit def rxMod[T <: dom.HTMLElement](r: Rx[HtmlTag]): Node = {
-    var last = r().render
+    def rSafe = r.toTry match {
+      case Success(v) => v.render
+      case Failure(e) => span(e.toString, backgroundColor := "red").render
+    }
+    var last = rSafe
     Obs(r, skipInitial = true){
-      val newLast = r().render
+      val newLast = rSafe
       last.parentElement.replaceChild(newLast, last)
       last = newLast
     }

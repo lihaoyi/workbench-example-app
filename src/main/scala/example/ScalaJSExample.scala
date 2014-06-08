@@ -9,9 +9,7 @@ import scala.scalajs.js.annotation.JSExport
 import scala.Some
 
 
-case class Task(txt: Var[String], done: Var[Boolean]){
-
-}
+case class Task(txt: Var[String], done: Var[Boolean])
 @JSExport
 object ScalaJSExample {
   import Framework._
@@ -26,6 +24,8 @@ object ScalaJSExample {
     )
   )
 
+  val filter = Var("All")
+
   val filters = Map[String, Task => Boolean](
     ("All", t => true),
     ("Active", !_.done()),
@@ -35,8 +35,6 @@ object ScalaJSExample {
   val done = Rx{tasks().count(_.done())}
 
   val notDone = Rx{tasks().length - done()}
-
-  val filter = Var("All")
 
   val inputBox = input(
     id:="new-todo",
