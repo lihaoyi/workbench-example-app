@@ -31,9 +31,9 @@ object Framework {
    * the element leaves the DOM (e.g. it gets deleted).
    */
   implicit def rxMod[T <: dom.HTMLElement](r: Rx[HtmlTag]): Node = {
-    var last = r().toDom
+    var last = r().render
     Obs(r, skipInitial = true){
-      val newLast = r().toDom
+      val newLast = r().render
       last.parentElement.replaceChild(newLast, last)
       last = newLast
     }

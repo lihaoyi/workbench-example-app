@@ -42,7 +42,7 @@ object ScalaJSExample {
     id:="new-todo",
     placeholder:="What needs to be done?",
     autofocus:=true
-  ).toDom
+  ).render
 
   @JSExport
   def main(): Unit = {
@@ -73,7 +73,7 @@ object ScalaJSExample {
           Rx {
             ul(id := "todo-list")(
               for (task <- tasks() if filters(filter())(task)) yield {
-                val inputRef = input(`class` := "edit", value := task.txt()).toDom
+                val inputRef = input(`class` := "edit", value := task.txt()).render
 
                 li(
                   `class` := Rx{
