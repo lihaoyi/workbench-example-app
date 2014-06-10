@@ -44,6 +44,7 @@ object ScalaJSExample {
 
   @JSExport
   def main(): Unit = {
+    dom.document.body.innerHTML = ""
     dom.document.body.appendChild(
       section(id:="todoapp")(
         header(id:="header")(
