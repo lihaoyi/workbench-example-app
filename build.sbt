@@ -12,7 +12,7 @@ name := "Example"
 version := "0.1-SNAPSHOT"
 
 libraryDependencies ++= Seq(
-  "org.scala-lang.modules.scalajs" %% "scalajs-dom" % "0.4"
+  "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6"
 )
 
 bootSnippet := "ScalaJSExample().main();"
