@@ -11,6 +11,8 @@ name := "Example"
 
 version := "0.1-SNAPSHOT"
 
+resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+
 libraryDependencies ++= Seq(
   "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6"
 )
