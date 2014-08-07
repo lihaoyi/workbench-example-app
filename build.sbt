@@ -9,6 +9,8 @@ workbenchSettings
 
 name := "Example"
 
+scalaVersion := "2.11.2"
+
 version := "0.1-SNAPSHOT"
 
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
