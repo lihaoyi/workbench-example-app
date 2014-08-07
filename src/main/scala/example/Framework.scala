@@ -1,9 +1,8 @@
 package example
 
 import scala.collection.{SortedMap, mutable}
-import scalatags.JsDom._
+import scalatags.JsDom.all._
 import scala.util.{Failure, Success, Random}
-import all._
 import rx._
 import rx.core.{Propagator, Obs}
 import org.scalajs.dom
@@ -20,7 +19,7 @@ object Framework {
    * Wraps reactive strings in spans, so they can be referenced/replaced
    * when the Rx changes.
    */
-  implicit def RxStr[T](r: Rx[T])(implicit f: T => Node): Node = {
+  implicit def RxStr[T](r: Rx[T])(implicit f: T => Frag): Frag = {
     rxMod(Rx(span(r())))
   }
 
@@ -30,7 +29,7 @@ object Framework {
    * the Obs onto the element itself so we have a reference to kill it when
    * the element leaves the DOM (e.g. it gets deleted).
    */
-  implicit def rxMod[T <: dom.HTMLElement](r: Rx[HtmlTag]): Node = {
+  implicit def rxMod[T <: dom.HTMLElement](r: Rx[HtmlTag]): Frag = {
     def rSafe = r.toTry match {
       case Success(v) => v.render
       case Failure(e) => span(e.toString, backgroundColor := "red").render
@@ -41,7 +40,7 @@ object Framework {
       last.parentElement.replaceChild(newLast, last)
       last = newLast
     }
-    bindElement(last)
+    bindNode(last)
   }
   implicit def RxAttrValue[T: AttrValue] = new AttrValue[Rx[T]]{
     def apply(t: Element, a: Attr, r: Rx[T]): Unit = {

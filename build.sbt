@@ -8,7 +8,7 @@ scalaJSSettings
 
 workbenchSettings
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.2"
 
 name := "Example"
 
@@ -16,8 +16,8 @@ version := "0.1-SNAPSHOT"
 
 libraryDependencies ++= Seq(
   "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6",
-  "com.scalatags" %%% "scalatags" % "0.3.0",
-  "com.scalarx" %%% "scalarx" % "0.2.5"
+  "com.scalatags" %%% "scalatags" % "0.4.0",
+  "com.scalarx" %%% "scalarx" % "0.2.6"
 )
 
 bootSnippet := "ScalaJSExample().main()"

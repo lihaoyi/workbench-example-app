@@ -1,9 +1,9 @@
 package example
 
 import org.scalajs.dom
-import scalatags.JsDom._
-import all._
-import tags2.section
+import scalatags.JsDom.all._
+
+import scalatags.JsDom.tags2.section
 import rx._
 import scala.scalajs.js.annotation.JSExport
 import scala.Some
