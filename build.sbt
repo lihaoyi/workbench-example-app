@@ -7,7 +7,9 @@ import com.lihaoyi.workbench.Plugin._
 import spray.revolver.AppProcess
 import spray.revolver.RevolverPlugin.Revolver
 
-val shared = project.in(file("shared")).settings(
+val shared = project.in(file("shared"))
+                    .settings(scalaJSSettings:_*)
+                    .settings(
   scalaVersion := "2.11.2",
   version := "0.1-SNAPSHOT"
 )
