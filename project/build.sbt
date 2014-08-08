@@ -7,3 +7,5 @@ resolvers  += "Online Play Repository" at
   "http://repo.typesafe.com/typesafe/simple/maven-releases/"
 
 addSbtPlugin("com.lihaoyi" % "workbench" % "0.1.3")
+
+addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.1")

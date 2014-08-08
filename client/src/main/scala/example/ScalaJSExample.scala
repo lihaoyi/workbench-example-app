@@ -2,45 +2,54 @@ package example
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.dom
 import scala.util.Random
+import scala.concurrent.Future
+import scalajs.concurrent.JSExecutionContext.Implicits.runNow
+import scalatags.JsDom.all._
+import upickle._
+object Ajax extends autowire.Client[Api]{
+  override def callRequest(req: autowire.Request): Future[String] = {
+    val url = "/api/" + req.path.mkString("/")
 
-case class Point(x: Int, y: Int){
-  def +(p: Point) = Point(x + p.x, y + p.y)
-  def /(d: Int) = Point(x / d, y / d)
+    dom.extensions.Ajax.post(
+      url = url,
+      data = upickle.write(req.args)
+    ).map(_.responseText)
+  }
 }
+
 
 @JSExport
 object ScalaJSExample {
-  val ctx = dom.document
-    .getElementById("canvas")
-    .asInstanceOf[dom.HTMLCanvasElement]
-    .getContext("2d")
-    .asInstanceOf[dom.CanvasRenderingContext2D]
-
-  var count = 0
-  var p = Point(0, 0)
-  val corners = Seq(Point(255, 255), Point(0, 255), Point(128, 0))
-
-  def clear() = {
-    ctx.fillStyle = "black"
-    ctx.fillRect(0, 0, 255, 255)
-  }
-
-  def run = for (i <- 0 until 10){
-    if (count % 30000 == 0) clear()
-    count += 1
-    p = (p + corners(Random.nextInt(3))) / 2
-    val height = 512.0 / (255 + p.y)
-    val r = (p.x * height).toInt
-    val g = ((255-p.x) * height).toInt
-    val b = p.y
-    ctx.fillStyle = s"rgb($g, $r, $b)"
-
-    ctx.fillRect(p.x, p.y, 1, 1)
-  }
   @JSExport
   def main(): Unit = {
-    dom.console.log("main")
+    
+    val inputBox = input.render
+    val outputBox = div.render
 
-    dom.setInterval(() => run, 50)
+    def updateOutput() = {
+      Ajax(_.list(inputBox.value)).foreach { paths =>
+        outputBox.innerHTML = ""
+        outputBox.appendChild(
+          ul(
+            for(path <- paths) yield {
+              li(path)
+            }
+          ).render
+        )
+      }
+    }
+    inputBox.onkeyup = {(e: dom.Event) =>
+      updateOutput()
+    }
+    updateOutput()
+    dom.document.body.appendChild(
+      div(
+        cls:="container",
+        h1("File Browser"),
+        p("Enter a file path to s"),
+        inputBox,
+        outputBox
+      ).render
+    )
   }
 }
