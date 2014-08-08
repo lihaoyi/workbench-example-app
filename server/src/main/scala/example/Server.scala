@@ -44,11 +44,9 @@ object Server extends SimpleRoutingApp with Api{
         path("api" / Segments){ s =>
           extract(_.request.entity.asString) { e =>
             complete {
-              val res = autowire.Macros.route[Api](Server)(
+              autowire.Macros.route[Api](Server)(
                 autowire.Request(s, upickle.read[Map[String, String]](e))
               )
-              res.foreach(r => println("RES::: " + r))
-              res
             }
           }
         }

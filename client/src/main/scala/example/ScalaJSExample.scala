@@ -8,10 +8,8 @@ import scalatags.JsDom.all._
 import upickle._
 object Ajax extends autowire.Client[Api]{
   override def callRequest(req: autowire.Request): Future[String] = {
-    val url = "/api/" + req.path.mkString("/")
-
     dom.extensions.Ajax.post(
-      url = url,
+      url = "/api/" + req.path.mkString("/"),
       data = upickle.write(req.args)
     ).map(_.responseText)
   }
