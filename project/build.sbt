@@ -6,6 +6,6 @@ resolvers += "spray repo" at "http://repo.spray.io"
 resolvers  += "Online Play Repository" at
   "http://repo.typesafe.com/typesafe/simple/maven-releases/"
 
-addSbtPlugin("com.lihaoyi" % "workbench" % "0.1.3")
+addSbtPlugin("com.lihaoyi" % "workbench" % "0.1.5")
 
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.1")
