@@ -6,13 +6,17 @@ import scala.concurrent.Future
 import scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import scalatags.JsDom.all._
 import upickle._
-object Ajax extends autowire.Client[Api]{
-  override def callRequest(req: autowire.Request): Future[String] = {
+import autowire._
+object Client extends autowire.Client[String, upickle.Reader, upickle.Writer]{
+  override def doCall(req: Request): Future[String] = {
     dom.extensions.Ajax.post(
       url = "/api/" + req.path.mkString("/"),
       data = upickle.write(req.args)
     ).map(_.responseText)
   }
+
+  def read[Result: upickle.Reader](p: String) = upickle.read[Result](p)
+  def write[Result: upickle.Writer](r: Result) = upickle.write(r)
 }
 
 
@@ -25,7 +29,7 @@ object ScalaJSExample {
     val outputBox = div.render
 
     def updateOutput() = {
-      Ajax(_.list(inputBox.value)).foreach { paths =>
+      Client[Api].list(inputBox.value).call().foreach { paths =>
         outputBox.innerHTML = ""
         outputBox.appendChild(
           ul(

@@ -25,6 +25,10 @@ object Template{
       body(margin:=0, onload:="ScalaJSExample().main()")
     )
 }
+object AutowireServer extends autowire.Server[String, upickle.Reader, upickle.Writer]{
+  def read[Result: upickle.Reader](p: String) = upickle.read[Result](p)
+  def write[Result: upickle.Writer](r: Result) = upickle.write(r)
+}
 object Server extends SimpleRoutingApp with Api{
   def main(args: Array[String]): Unit = {
     implicit val system = ActorSystem()
@@ -44,8 +48,8 @@ object Server extends SimpleRoutingApp with Api{
         path("api" / Segments){ s =>
           extract(_.request.entity.asString) { e =>
             complete {
-              autowire.Macros.route[Api](Server)(
-                autowire.Request(s, upickle.read[Map[String, String]](e))
+              AutowireServer.route[Api](Server)(
+                autowire.Core.Request(s, upickle.read[Map[String, String]](e))
               )
             }
           }
