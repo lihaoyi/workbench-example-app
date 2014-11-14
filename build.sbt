@@ -7,44 +7,35 @@ import com.lihaoyi.workbench.Plugin._
 import spray.revolver.AppProcess
 import spray.revolver.RevolverPlugin.Revolver
 
-val shared = project.in(file("shared"))
-                    .settings(scalaJSSettings:_*)
-                    .settings(
-  scalaVersion := "2.11.2",
-  version := "0.1-SNAPSHOT"
-)
-
-val client = project.in(file("client"))
-                    .settings(scalaJSSettings ++workbenchSettings:_*)
-                    .dependsOn(shared)
-                    .settings(
-  name := "Client",
+val cross = new utest.jsrunner.JsCrossBuild(
   scalaVersion := "2.11.2",
   version := "0.1-SNAPSHOT",
-  resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
   libraryDependencies ++= Seq(
-    "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6",
     "com.lihaoyi" %%% "upickle" % "0.2.5",
     "com.lihaoyi" %%% "autowire" % "0.2.3",
     "com.scalatags" %%% "scalatags" % "0.4.2"
+  )
+)
+val client = cross.js.in(file("client"))
+                    .copy(id="client")
+                    .settings(scalaJSSettings ++workbenchSettings:_*)
+                    .settings(
+  name := "Client",
+  libraryDependencies ++= Seq(
+    "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6"
   ),
   bootSnippet := "ScalaJSExample().main();"
 )
 
-val server = project.in(file("server"))
-                    .dependsOn(shared)
+val server = cross.jvm.in(file("server"))
+                    .copy(id="server")
                     .settings(Revolver.settings:_*)
                     .settings(
   name := "Server",
-  scalaVersion := "2.11.2",
-  version := "0.1-SNAPSHOT",
   libraryDependencies ++= Seq(
     "io.spray" %% "spray-can" % "1.3.1",
     "io.spray" %% "spray-routing" % "1.3.1",
-    "com.lihaoyi" %% "upickle" % "0.2.5",
-    "com.lihaoyi" %% "autowire" % "0.2.3",
     "com.typesafe.akka" %% "akka-actor" % "2.3.2",
-    "com.scalatags" %% "scalatags" % "0.4.2",
     "org.webjars" % "bootstrap" % "3.2.0"
   ),
   (resources in Compile) += {

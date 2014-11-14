@@ -22,7 +22,9 @@ object Template{
           href:="META-INF/resources/webjars/bootstrap/3.2.0/css/bootstrap.min.css"
         )
       ),
-      body(margin:=0, onload:="ScalaJSExample().main()")
+      body(margin:=0)(
+        script("ScalaJSExample().main()")
+      )
     )
 }
 object AutowireServer extends autowire.Server[String, upickle.Reader, upickle.Writer]{
