@@ -24,9 +24,9 @@ val client = project.in(file("client"))
   resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
   libraryDependencies ++= Seq(
     "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6",
-    "com.lihaoyi" %%% "upickle" % "0.2.2",
-    "com.lihaoyi" %%% "autowire" % "0.2.1",
-    "com.scalatags" %%% "scalatags" % "0.4.0"
+    "com.lihaoyi" %%% "upickle" % "0.2.5",
+    "com.lihaoyi" %%% "autowire" % "0.2.3",
+    "com.scalatags" %%% "scalatags" % "0.4.2"
   ),
   bootSnippet := "ScalaJSExample().main();"
 )
@@ -41,10 +41,10 @@ val server = project.in(file("server"))
   libraryDependencies ++= Seq(
     "io.spray" %% "spray-can" % "1.3.1",
     "io.spray" %% "spray-routing" % "1.3.1",
-    "com.lihaoyi" %% "upickle" % "0.2.2",
-    "com.lihaoyi" %% "autowire" % "0.2.1",
+    "com.lihaoyi" %% "upickle" % "0.2.5",
+    "com.lihaoyi" %% "autowire" % "0.2.3",
     "com.typesafe.akka" %% "akka-actor" % "2.3.2",
-    "com.scalatags" %% "scalatags" % "0.4.0",
+    "com.scalatags" %% "scalatags" % "0.4.2",
     "org.webjars" % "bootstrap" % "3.2.0"
   ),
   (resources in Compile) += {
