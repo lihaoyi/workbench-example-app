@@ -8,7 +8,7 @@ import spray.revolver.AppProcess
 import spray.revolver.RevolverPlugin.Revolver
 
 val cross = new utest.jsrunner.JsCrossBuild(
-  scalaVersion := "2.11.2",
+  scalaVersion := "2.11.4",
   version := "0.1-SNAPSHOT",
   libraryDependencies ++= Seq(
     "com.lihaoyi" %%% "upickle" % "0.2.5",
