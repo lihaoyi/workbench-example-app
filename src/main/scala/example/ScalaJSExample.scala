@@ -34,12 +34,7 @@ object ScalaJSExample {
   var enemies = Seq.empty[Point]
 
   var wave = 1
-
-  def clear() = {
-    ctx.fillStyle = "black"
-    ctx.fillRect(0, 0, 255, 255)
-  }
-
+  
   def run = {
     count += 1
     bullets = bullets.map(
