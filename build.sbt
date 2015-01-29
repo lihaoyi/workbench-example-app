@@ -1,7 +1,6 @@
-import scala.scalajs.sbtplugin.ScalaJSPlugin._
 import com.lihaoyi.workbench.Plugin._
 
-scalaJSSettings
+enablePlugins(ScalaJSPlugin)
 
 workbenchSettings
 
@@ -12,10 +11,10 @@ version := "0.1-SNAPSHOT"
 scalaVersion := "2.11.4"
 
 libraryDependencies ++= Seq(
-  "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6"
+  "org.scala-js" %%% "scalajs-dom" % "0.7.0"
 )
 
-bootSnippet := "ScalaJSExample().main(document.getElementById('canvas'));"
+bootSnippet := "example.ScalaJSExample().main(document.getElementById('canvas'));"
 
-updateBrowsers <<= updateBrowsers.triggeredBy(ScalaJSKeys.fastOptJS in Compile)
+updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
 
