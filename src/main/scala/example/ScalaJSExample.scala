@@ -1,6 +1,7 @@
 package example
 
 import org.scalajs.dom
+import org.scalajs.dom.html
 import scala.util.Random
 import scala.scalajs.js
 import js.annotation.JSExport
@@ -20,7 +21,7 @@ object ScalaJSExample {
 
   val canvas = dom.document
                   .getElementById("canvas")
-                  .asInstanceOf[dom.HTMLCanvasElement]
+                  .asInstanceOf[html.Canvas]
   val ctx = canvas.getContext("2d")
                   .asInstanceOf[dom.CanvasRenderingContext2D]
   var player = Point(dom.innerWidth.toInt/2, dom.innerHeight.toInt/2)
