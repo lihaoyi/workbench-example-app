@@ -1,6 +1,7 @@
 package example
 
 import org.scalajs.dom
+import org.scalajs.dom.html
 
 import scala.scalajs.js.annotation.JSExport
 
@@ -17,7 +18,7 @@ object ScalaJSExample {
   val canvas =
     dom.document
        .getElementById("canvas")
-       .asInstanceOf[dom.HTMLCanvasElement]
+       .asInstanceOf[html.Canvas]
 
   val ctx =
     canvas.getContext("2d")
