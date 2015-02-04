@@ -81,7 +81,7 @@ object ScalaJSExample {
                     else ""
                   },
                   div(`class` := "view")(
-                    "ondblclick".attr := { () =>
+                    ondblclick := { () =>
                       editing() = Some(task)
                     },
                     input(

@@ -5,7 +5,7 @@ import scalatags.JsDom.all._
 import scala.util.{Failure, Success, Random}
 import rx._
 import rx.core.{Propagator, Obs}
-import org.scalajs.dom
+import org.scalajs.dom.html
 import org.scalajs.dom.{Element, DOMParser}
 import scala.scalajs.js
 
@@ -29,7 +29,7 @@ object Framework {
    * the Obs onto the element itself so we have a reference to kill it when
    * the element leaves the DOM (e.g. it gets deleted).
    */
-  implicit def rxMod[T <: dom.HTMLElement](r: Rx[HtmlTag]): Frag = {
+  implicit def rxMod[T <: html.Element](r: Rx[HtmlTag]): Frag = {
     def rSafe = r.toTry match {
       case Success(v) => v.render
       case Failure(e) => span(e.toString, backgroundColor := "red").render
