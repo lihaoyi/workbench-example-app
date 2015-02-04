@@ -1,4 +1,7 @@
 package example
+
+import org.scalajs.dom.html
+
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.dom
 import math._
@@ -28,7 +31,7 @@ object ScalaJSExample {
 
   val canvas = dom.document
                   .getElementById("canvas")
-                  .asInstanceOf[dom.HTMLCanvasElement]
+                  .asInstanceOf[html.Canvas]
 
   canvas.width = 1024
   canvas.height = 1024
