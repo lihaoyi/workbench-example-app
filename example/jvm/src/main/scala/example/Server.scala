@@ -23,7 +23,7 @@ object Template{
         )
       ),
       body(margin:=0)(
-        script("ScalaJSExample().main()")
+        script("example.ScalaJSExample().main()")
       )
     )
 }

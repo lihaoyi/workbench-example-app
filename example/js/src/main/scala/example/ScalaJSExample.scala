@@ -9,7 +9,7 @@ import upickle._
 import autowire._
 object Client extends autowire.Client[String, upickle.Reader, upickle.Writer]{
   override def doCall(req: Request): Future[String] = {
-    dom.extensions.Ajax.post(
+    dom.ext.Ajax.post(
       url = "/api/" + req.path.mkString("/"),
       data = upickle.write(req.args)
     ).map(_.responseText)
