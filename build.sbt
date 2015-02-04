@@ -11,7 +11,7 @@ val example = crossProject.settings(
   libraryDependencies ++= Seq(
     "com.lihaoyi" %%% "upickle" % "0.2.6",
     "com.lihaoyi" %%% "autowire" % "0.2.4",
-    "com.lihaoyi" %%% "scalatags" % "0.4.4"
+    "com.lihaoyi" %%% "scalatags" % "0.4.5"
   )
 ).jsSettings(
   workbenchSettings:_*
