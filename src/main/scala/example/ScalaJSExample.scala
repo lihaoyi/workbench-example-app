@@ -1,9 +1,12 @@
 package example
+
+import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.dom
 import org.scalajs.dom.html
 import scala.util.Random
-
+import scalajs.concurrent.JSExecutionContext.Implicits.queue
+import org.scalajs.dom.ext
 case class Point(x: Int, y: Int){
   def +(p: Point) = Point(x + p.x, y + p.y)
   def /(d: Int) = Point(x / d, y / d)
@@ -16,29 +19,53 @@ object ScalaJSExample {
     val ctx = canvas.getContext("2d")
                     .asInstanceOf[dom.CanvasRenderingContext2D]
 
-    var count = 0
-    var p = Point(0, 0)
-    val corners = Seq(Point(255, 255), Point(0, 255), Point(128, 0))
+    canvas.width = dom.innerWidth
+    canvas.height = dom.innerHeight
 
-    def clear() = {
-      ctx.fillStyle = "black"
-      ctx.fillRect(0, 0, 255, 255)
+    ctx.fillStyle = "black"
+    ctx.fillRect(0, 0, 10000, 20000)
+    val prefixes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    val allPrefixes = for{
+      a <- prefixes
+      b <- prefixes
+      c <- prefixes
+    } yield s"$a$b$c"
+    var i = 0
+
+    def run(prefix: String) = {
+      i += 1
+      println(i + "\t" +  allPrefixes.length)
+      val fut = ext.Ajax.get(s"http://api.openweathermap.org/data/2.5/find?q=$prefix&type=like&mode=json")
+      fut.foreach{ xhr =>
+//        println(xhr.responseText)
+//        println(prefix + "\t" + xhr.responseText.length)
+        val parsed = js.JSON.parse(xhr.responseText)
+//        dom.console.log(parsed)
+        parsed.list.map{ el: js.Dynamic =>
+          val x = el.coord.lon.asInstanceOf[Double]
+          val y = el.coord.lat.asInstanceOf[Double]
+          val t = el.main.temp.asInstanceOf[Double] // 250 -> 350
+          val screenX =  (x / 180 + 1) / 2 * canvas.width
+          val screenY = canvas.height - (y / 90 + 1) / 2 * canvas.height
+
+          val tScaled = ((t - 260) / 50 * 255).toInt // 0 - 255
+          val (r, g, b) = color(tScaled)
+          println(t)
+          ctx.fillStyle = s"rgb($r, $g, $b)"
+          ctx.fillRect(screenX - 2, screenY - 2, 4, 4)
+        }
+
+      }
     }
-
-    def run = for (i <- 0 until 10){
-      if (count % 3000 == 0) clear()
-      count += 1
-      p = (p + corners(Random.nextInt(3))) / 2
-
-      val height = 512.0 / (255 + p.y)
-      val r = (p.x * height).toInt
-      val g = ((255-p.x) * height).toInt
-      val b = p.y
-      ctx.fillStyle = s"rgb($g, $r, $b)"
-
-      ctx.fillRect(p.x, p.y, 1, 1)
+    def color(tScaled: Int) = { // 0 -> 255
+      val r = math.max(tScaled - 128, 0) * 2
+      val g = (128 - math.abs(tScaled - 128)) * 2
+      val b = math.max(128 - tScaled, 0) * 2
+      (r, g, b)
     }
-
-    dom.setInterval(() => run, 50)
+//    println(color(0))
+//    println(color(128))
+//    println(color(255))
+    dom.setInterval(() => run(allPrefixes(i)), 10)
   }
 }
