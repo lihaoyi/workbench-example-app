@@ -37,3 +37,7 @@ The `todomvc` branch contains an implementation of the [TodoMVC example applicat
 ## Ray Tracer
 
 The `ray-tracer` branch contains a simple ray-tracer written using Scala.js, with a [live demo](http://lihaoyi.github.io/workbench-example-app/raytracer.html).
+
+## Weather Map
+
+The `mapper` branch contains an application that renders a heat map of the earth, using data pulled from OpenWeatherMap, with a [live demo](http://lihaoyi.github.io/workbench-example-app/map.html)
