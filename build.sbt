@@ -9,11 +9,11 @@ name := "Example"
 
 version := "0.1-SNAPSHOT"
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
   "org.scala-js" %%% "scalajs-dom" % "0.8.0",
-  "org.scala-lang.modules" %% "scala-async" % "0.9.1",
+  "org.scala-lang.modules" %% "scala-async" % "0.9.2",
   "com.nativelibs4java" %% "scalaxy-loops" % "0.1.1" % "provided"
 )
 
