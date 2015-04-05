@@ -305,9 +305,9 @@ class Scene(objects: Array[(Form, Surface)],
     for(y <- 0 until canvas.height optimized){
       if (y % 2 == 0) await(Future())
       canvas.save(y)
+      val ycomp = vpUp * (y * pixelHeight - halfHeight)
       for (x <- 0 until canvas.width optimized){
         val xcomp = vpRight * (x * pixelWidth - halfWidth)
-        val ycomp = vpUp * (y * pixelHeight - halfHeight)
         val ray = Ray(eye.point, xcomp + ycomp + eye.vector)
         val color = rayColor(ray, 0)
         canvas.plot(x, y, color)
