@@ -85,14 +85,13 @@ object ScalaJSExample {
     val c = new Canvas{
       val width = canvas.width.toInt
       val height = canvas.height.toInt
-      val data = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      val data = ctx.getImageData(0, 0, canvas.width, 1)
       def save(y: Int): Unit = {
-        println("Saving...")
-        ctx.putImageData(data, 0, 0, 0, y-1, width, 1)
+        ctx.putImageData(data, 0, y-1)
       }
 
       def plot(x: Int, y: Int, rgb: ScalaJSExample.Color): Unit = {
-        val index = (y * data.width.toInt + x) * 4
+        val index = x * 4
         data.data(index+0) = (rgb.x * 255).toInt
         data.data(index+1) = (rgb.y * 255).toInt
         data.data(index+2) = (rgb.z * 255).toInt
