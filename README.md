@@ -41,3 +41,7 @@ The `ray-tracer` branch contains a simple ray-tracer written using Scala.js, wit
 ## Weather Map
 
 The `mapper` branch contains an application that renders a heat map of the earth, using data pulled from OpenWeatherMap, with a [live demo](http://lihaoyi.github.io/workbench-example-app/map.html)
+
+## Autowire
+
+The `autowire` branch contains a small sample client-server application, using Scala.js on the client and Spray on the server. The readme on that branch contains instructions on how to run it.
