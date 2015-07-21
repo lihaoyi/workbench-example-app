@@ -2,7 +2,6 @@ package example
 import upickle._
 import spray.routing.SimpleRoutingApp
 import akka.actor.ActorSystem
-import scala.concurrent.ExecutionContext.Implicits.global
 import spray.http.{MediaTypes, HttpEntity}
 
 object Template{
@@ -34,6 +33,8 @@ object AutowireServer extends autowire.Server[String, upickle.Reader, upickle.Wr
 object Server extends SimpleRoutingApp with Api{
   def main(args: Array[String]): Unit = {
     implicit val system = ActorSystem()
+    import system.dispatcher
+
     startServer("0.0.0.0", port = 8080) {
       get{
         pathSingleSlash {
@@ -50,7 +51,7 @@ object Server extends SimpleRoutingApp with Api{
         path("api" / Segments){ s =>
           extract(_.request.entity.asString) { e =>
             complete {
-              AutowireServer.route[Api](Server)(
+              AutowireServer.route[Api](this)(
                 autowire.Core.Request(s, upickle.read[Map[String, String]](e))
               )
             }
