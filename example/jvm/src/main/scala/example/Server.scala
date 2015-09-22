@@ -1,5 +1,6 @@
 package example
-import upickle._
+import upickle.default._
+import upickle.Js
 import spray.routing.SimpleRoutingApp
 import akka.actor.ActorSystem
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,9 +28,9 @@ object Template{
       )
     )
 }
-object AutowireServer extends autowire.Server[String, upickle.Reader, upickle.Writer]{
-  def read[Result: upickle.Reader](p: String) = upickle.read[Result](p)
-  def write[Result: upickle.Writer](r: Result) = upickle.write(r)
+object AutowireServer extends autowire.Server[Js.Value, Reader, Writer]{
+  def read[Result: Reader](p: Js.Value) = upickle.default.readJs[Result](p)
+  def write[Result: Writer](r: Result) = upickle.default.writeJs(r)
 }
 object Server extends SimpleRoutingApp with Api{
   def main(args: Array[String]): Unit = {
@@ -51,8 +52,11 @@ object Server extends SimpleRoutingApp with Api{
           extract(_.request.entity.asString) { e =>
             complete {
               AutowireServer.route[Api](Server)(
-                autowire.Core.Request(s, upickle.read[Map[String, String]](e))
-              )
+                autowire.Core.Request(
+                  s,
+                  upickle.json.read(e).asInstanceOf[Js.Obj].value.toMap
+                )
+              ).map(upickle.json.write)
             }
           }
         }

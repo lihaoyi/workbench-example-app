@@ -9,16 +9,16 @@ val example = crossProject.settings(
   scalaVersion := "2.11.4",
   version := "0.1-SNAPSHOT",
   libraryDependencies ++= Seq(
-    "com.lihaoyi" %%% "upickle" % "0.2.6",
+    "com.lihaoyi" %%% "upickle" % "0.3.6",
     "com.lihaoyi" %%% "autowire" % "0.2.4",
-    "com.lihaoyi" %%% "scalatags" % "0.4.5"
+    "com.lihaoyi" %%% "scalatags" % "0.5.2"
   )
 ).jsSettings(
   workbenchSettings:_*
 ).jsSettings(
   name := "Client",
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+    "org.scala-js" %%% "scalajs-dom" % "0.8.1"
   ),
   bootSnippet := "example.ScalaJSExample().main();"
 ).jvmSettings(
