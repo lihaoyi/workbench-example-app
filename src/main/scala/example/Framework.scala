@@ -37,7 +37,9 @@ object Framework {
     var last = rSafe
     Obs(r, skipInitial = true){
       val newLast = rSafe
-      Option(last.parentElement) map (_.replaceChild(newLast, last))
+      if (last.parentElement != null) {
+        last.parentElement.replaceChild(newLast, last)
+      }
       last = newLast
     }
     last
