@@ -37,10 +37,12 @@ object Framework {
     var last = rSafe
     Obs(r, skipInitial = true){
       val newLast = rSafe
-      last.parentElement.replaceChild(newLast, last)
+      if (last.parentElement != null) {
+        last.parentElement.replaceChild(newLast, last)
+      }
       last = newLast
     }
-    bindNode(last)
+    last
   }
   implicit def RxAttrValue[T: AttrValue] = new AttrValue[Rx[T]]{
     def apply(t: Element, a: Attr, r: Rx[T]): Unit = {
