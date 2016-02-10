@@ -6,7 +6,7 @@ import spray.revolver.AppProcess
 import spray.revolver.RevolverPlugin.Revolver
 
 val example = crossProject.settings(
-  scalaVersion := "2.11.4",
+  scalaVersion := "2.11.7",
   version := "0.1-SNAPSHOT",
   libraryDependencies ++= Seq(
     "com.lihaoyi" %%% "upickle" % "0.3.6",

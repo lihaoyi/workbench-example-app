@@ -9,6 +9,7 @@ import spray.http.{MediaTypes, HttpEntity}
 object Template{
   import scalatags.Text.all._
   import scalatags.Text.tags2.title
+
   val txt =
     "<!DOCTYPE html>" +
     html(
