@@ -39,6 +39,6 @@ object ScalaJSExample {
       ctx.fillRect(p.x, p.y, 1, 1)
     }
 
-    dom.setInterval(() => run, 50)
+    dom.window.setInterval(() => run, 50)
   }
 }
