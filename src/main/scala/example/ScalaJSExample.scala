@@ -24,15 +24,15 @@ object ScalaJSExample {
                   .asInstanceOf[html.Canvas]
   val ctx = canvas.getContext("2d")
                   .asInstanceOf[dom.CanvasRenderingContext2D]
-  var player = Point(dom.innerWidth.toInt/2, dom.innerHeight.toInt/2)
+  var player = Point(dom.window.innerWidth.toInt/2, dom.window.innerHeight.toInt/2)
 
   var enemies = Seq.empty[Enemy]
 
   var death: Option[(String, Int)] = None
   def run() = {
 
-    canvas.height = dom.innerHeight
-    canvas.width = dom.innerWidth
+    canvas.height = dom.window.innerHeight.toInt
+    canvas.width = dom.window.innerWidth.toInt
 
     // doing
 
@@ -101,6 +101,6 @@ object ScalaJSExample {
       player = Point(e.clientX.toInt, e.clientY.toInt)
       (): js.Any
     }
-    dom.setInterval(() => {run(); draw()}, 20)
+    dom.window.setInterval(() => {run(); draw()}, 20)
   }
 }
