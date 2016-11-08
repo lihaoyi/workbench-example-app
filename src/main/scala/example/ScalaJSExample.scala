@@ -6,7 +6,6 @@ import scalatags.JsDom.all._
 import scalatags.JsDom.tags2.section
 import rx._
 import scala.scalajs.js.annotation.JSExport
-import scala.Some
 
 
 case class Task(txt: Var[String], done: Var[Boolean])
@@ -28,8 +27,8 @@ object ScalaJSExample {
 
   val filters = Map[String, Task => Boolean](
     ("All", t => true),
-    ("Active", !_.done()),
-    ("Completed", _.done())
+    ("Active", !_.done.now),
+    ("Completed", _.done.now)
   )
 
   val done = Rx{tasks().count(_.done())}
@@ -44,6 +43,7 @@ object ScalaJSExample {
 
   @JSExport
   def main(): Unit = {
+    import Ctx.Owner.Unsafe._
     dom.document.body.innerHTML = ""
     dom.document.body.appendChild(
       section(id:="todoapp")(
@@ -52,7 +52,7 @@ object ScalaJSExample {
           form(
             inputBox,
             onsubmit := { () =>
-              tasks() = Task(Var(inputBox.value), Var(false)) +: tasks()
+              tasks() = Task(Var(inputBox.value), Var(false)) +: tasks.now
               inputBox.value = ""
               false
             }
@@ -64,8 +64,8 @@ object ScalaJSExample {
             `type`:="checkbox",
             cursor:="pointer",
             onclick := { () =>
-              val target = tasks().exists(_.done() == false)
-              Var.set(tasks().map(_.done -> target): _*)
+              val target = tasks.now.exists(_.done.now == false)
+              Var.set(tasks.now.map(_.done -> target): _*)
             }
           ),
           label(`for`:="toggle-all", "Mark all as complete"),
@@ -89,7 +89,7 @@ object ScalaJSExample {
                       `type` := "checkbox",
                       cursor := "pointer",
                       onchange := { () =>
-                        task.done() = !task.done()
+                        task.done() = !(task.done.now)
                       },
                       if (task.done()) checked := true
                     ),
@@ -130,7 +130,7 @@ object ScalaJSExample {
             ),
             button(
               id:="clear-completed",
-              onclick := { () => tasks() = tasks().filter(!_.done()) },
+              onclick := { () => tasks() = tasks.now.filter(!_.done.now) },
               "Clear completed (", done, ")"
             )
           )
