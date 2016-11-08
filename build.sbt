@@ -8,11 +8,11 @@ name := "Example"
 
 version := "0.1-SNAPSHOT"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
-  "org.scala-js" %%% "scalajs-dom" % "0.8.2",
-  "com.lihaoyi" %%% "scalatags" % "0.5.4"
+  "org.scala-js" %%% "scalajs-dom" % "0.9.1",
+  "com.lihaoyi" %%% "scalatags" % "0.6.1"
 )
 
 bootSnippet := "example.ScalaJSExample().main(document.getElementById('canvas'));"
