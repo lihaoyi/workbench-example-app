@@ -1,10 +1,4 @@
-// Turn this project into a Scala.js project by importing these settings
-
-import com.lihaoyi.workbench.Plugin._
-
-enablePlugins(ScalaJSPlugin)
-
-workbenchSettings
+enablePlugins(ScalaJSPlugin, WorkbenchPlugin)
 
 name := "Example"
 
@@ -15,7 +9,3 @@ scalaVersion := "2.11.8"
 libraryDependencies ++= Seq(
   "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 )
-
-bootSnippet := "example.ScalaJSExample().main();"
-
-updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
