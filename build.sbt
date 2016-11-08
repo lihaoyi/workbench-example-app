@@ -1,8 +1,4 @@
-import com.lihaoyi.workbench.Plugin._
-
-enablePlugins(ScalaJSPlugin)
-
-workbenchSettings
+enablePlugins(ScalaJSPlugin, WorkbenchPlugin)
 
 name := "Example"
 
@@ -14,8 +10,3 @@ libraryDependencies ++= Seq(
   "org.scala-js" %%% "scalajs-dom" % "0.9.1",
   "com.lihaoyi" %%% "scalatags" % "0.6.1"
 )
-
-bootSnippet := "example.ScalaJSExample().main(document.getElementById('canvas'));"
-
-updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
-
