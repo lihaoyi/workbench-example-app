@@ -57,7 +57,7 @@ object Server extends SimpleRoutingApp with Api{
                   s,
                   upickle.json.read(e).asInstanceOf[Js.Obj].value.toMap
                 )
-              ).map(upickle.json.write)
+              ).map(upickle.json.write(_))
             }
           }
         }
