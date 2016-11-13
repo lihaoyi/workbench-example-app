@@ -26,9 +26,8 @@ val example = crossProject.settings(
 ).jvmSettings(
   name := "Server",
   libraryDependencies ++= Seq(
-    "io.spray" %% "spray-can" % "1.3.1",
-    "io.spray" %% "spray-routing" % "1.3.1",
-    "com.typesafe.akka" %% "akka-actor" % "2.3.2",
+    "com.typesafe.akka" %% "akka-http-experimental" % "2.4.11",
+    "com.typesafe.akka" %% "akka-actor" % "2.4.12",
     "org.webjars" % "bootstrap" % "3.2.0"
   )
 )

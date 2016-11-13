@@ -1,10 +1,12 @@
 package example
 import upickle.default._
 import upickle.Js
-import spray.routing.SimpleRoutingApp
 import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.server.Directives._
+import akka.stream.ActorMaterializer
 import scala.concurrent.ExecutionContext.Implicits.global
-import spray.http.{MediaTypes, HttpEntity}
 
 object Template{
   import scalatags.Text.all._
@@ -33,15 +35,16 @@ object AutowireServer extends autowire.Server[Js.Value, Reader, Writer]{
   def read[Result: Reader](p: Js.Value) = upickle.default.readJs[Result](p)
   def write[Result: Writer](r: Result) = upickle.default.writeJs(r)
 }
-object Server extends SimpleRoutingApp with Api{
+object Server extends Api {
   def main(args: Array[String]): Unit = {
     implicit val system = ActorSystem()
-    startServer("0.0.0.0", port = 8080) {
+    implicit val materializer = ActorMaterializer()
+    val route = {
       get{
         pathSingleSlash {
           complete{
             HttpEntity(
-              MediaTypes.`text/html`,
+              ContentTypes.`text/html(UTF-8)`,
               Template.txt
             )
           }
@@ -50,7 +53,7 @@ object Server extends SimpleRoutingApp with Api{
       } ~
       post {
         path("api" / Segments){ s =>
-          extract(_.request.entity.asString) { e =>
+          extract(_.request.entity.toString) { e =>
             complete {
               AutowireServer.route[Api](Server)(
                 autowire.Core.Request(
@@ -63,6 +66,7 @@ object Server extends SimpleRoutingApp with Api{
         }
       }
     }
+    Http().bindAndHandle(route, "0.0.0.0", port = 8080)
   }
 
   def list(path: String) = {
