@@ -1,4 +1,5 @@
 package example
+import scala.concurrent.Future
 import upickle.default._
 import upickle.Js
 import akka.actor.ActorSystem
@@ -31,10 +32,6 @@ object Template{
       )
     )
 }
-object AutowireServer extends autowire.Server[Js.Value, Reader, Writer]{
-  def read[Result: Reader](p: Js.Value) = upickle.default.readJs[Result](p)
-  def write[Result: Writer](r: Result) = upickle.default.writeJs(r)
-}
 object Server extends Api {
   def main(args: Array[String]): Unit = {
     implicit val system = ActorSystem()
@@ -52,18 +49,17 @@ object Server extends Api {
         getFromResourceDirectory("")
       } ~
       post {
-        path("api" / Segments){ s =>
+        path("api" / "example" / "Api" / "list"){
           extract(_.request.entity match {
             case HttpEntity.Strict(nb: ContentType.NonBinary, data) =>
               data.decodeString(nb.charset.value)
           }) { e =>
             complete {
-              AutowireServer.route[Api](Server)(
-                autowire.Core.Request(
-                  s,
-                  upickle.json.read(e).asInstanceOf[Js.Obj].value.toMap
-                )
-              ).map(upickle.json.write(_))
+              Future.successful(upickle.json.read(e).asInstanceOf[Js.Obj].value.toMap)
+                .map((args: Map[String, Js.Value]) => upickle.default.readJs[String](args("path")))
+                .map(list _)
+                .map((result: Seq[String]) => upickle.default.writeJs(result))
+                .map(upickle.json.write(_))
             }
           }
         }
@@ -72,7 +68,7 @@ object Server extends Api {
     Http().bindAndHandle(route, "0.0.0.0", port = 8080)
   }
 
-  def list(path: String) = {
+  def list(path: String): Seq[String] = {
     val chunks = path.split("/", -1)
     val prefix = "./" + chunks.dropRight(1).mkString("/")
     val files = Option(new java.io.File(prefix).list()).toSeq.flatten
