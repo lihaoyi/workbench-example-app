@@ -8,10 +8,8 @@ import upickle.default._
 
 object ClientApi extends Api {
   def list(path: String): Future[Seq[String]] = {
-    dom.ext.Ajax.post(
-      url = "/api/" + listEndpoint,
-      data = write(path)
-    ).map(r => read[Seq[String]](r.responseText))
+    dom.ext.Ajax.post(url = "/api/path", data = path)
+      .map(r => read[Seq[String]](r.responseText))
   }
 }
 

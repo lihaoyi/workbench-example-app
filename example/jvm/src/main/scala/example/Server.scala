@@ -1,5 +1,5 @@
 package example
-import scala.concurrent.Future
+
 import upickle.default._
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -48,13 +48,10 @@ object Server extends Api {
         getFromResourceDirectory("")
       } ~
       post {
-        path("api" / listEndpoint){
-          extract(_.request.entity match {
-            case HttpEntity.Strict(nb: ContentType.NonBinary, data) =>
-              data.decodeString(nb.charset.value)
-          }) { e =>
+        path("api" / "path") {
+          entity(as[String]) { e =>
             complete {
-              Future.successful(write(list(read[String](e))))
+              write(list(e))
             }
           }
         }
