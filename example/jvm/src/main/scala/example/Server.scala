@@ -53,10 +53,7 @@ object Server extends Api {
       } ~
       post {
         path("api" / Segments){ s =>
-          extract(_.request.entity match {
-            case HttpEntity.Strict(nb: ContentType.NonBinary, data) =>
-              data.decodeString(nb.charset.value)
-          }) { e =>
+          extract(entity(as[String])) { e =>
             complete {
               AutowireServer.route[Api](Server)(
                 autowire.Core.Request(
