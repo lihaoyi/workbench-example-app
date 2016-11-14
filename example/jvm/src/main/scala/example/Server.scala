@@ -49,7 +49,7 @@ object Server extends Api {
         getFromResourceDirectory("")
       } ~
       post {
-        path("api" / "example" / "Api" / "list"){
+        path("api" / listEndpoint){
           extract(_.request.entity match {
             case HttpEntity.Strict(nb: ContentType.NonBinary, data) =>
               data.decodeString(nb.charset.value)

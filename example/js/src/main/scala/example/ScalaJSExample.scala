@@ -7,10 +7,10 @@ import scalatags.JsDom.all._
 import upickle.default._
 import upickle.Js
 
-object ClientApi {
+object ClientApi extends Api {
   def list(path: String): Future[Seq[String]] = {
     dom.ext.Ajax.post(
-      url = "/api/example/Api/list",
+      url = "/api/" + listEndpoint,
       data = upickle.json.write(writeJs(Js.Obj("path" -> Js.Str(path))))
     ).map(_.responseText)
      .map(upickle.json.read)
