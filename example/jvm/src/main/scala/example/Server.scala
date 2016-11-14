@@ -1,7 +1,6 @@
 package example
 import scala.concurrent.Future
 import upickle.default._
-import upickle.Js
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
@@ -55,11 +54,7 @@ object Server extends Api {
               data.decodeString(nb.charset.value)
           }) { e =>
             complete {
-              Future.successful(upickle.json.read(e).asInstanceOf[Js.Obj].value.toMap)
-                .map((args: Map[String, Js.Value]) => upickle.default.readJs[String](args("path")))
-                .map(list _)
-                .map((result: Seq[String]) => upickle.default.writeJs(result))
-                .map(upickle.json.write(_))
+              Future.successful(write(list(read[String](e))))
             }
           }
         }

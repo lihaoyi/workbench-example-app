@@ -5,16 +5,13 @@ import scala.concurrent.Future
 import scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import scalatags.JsDom.all._
 import upickle.default._
-import upickle.Js
 
 object ClientApi extends Api {
   def list(path: String): Future[Seq[String]] = {
     dom.ext.Ajax.post(
       url = "/api/" + listEndpoint,
-      data = upickle.json.write(writeJs(Js.Obj("path" -> Js.Str(path))))
-    ).map(_.responseText)
-     .map(upickle.json.read)
-     .map(readJs[Seq[String]])
+      data = write(path)
+    ).map(r => read[Seq[String]](r.responseText))
   }
 }
 
