@@ -13,7 +13,6 @@ val example = crossProject.settings(
   version := "0.1-SNAPSHOT",
   libraryDependencies ++= Seq(
     "com.lihaoyi" %%% "upickle" % "0.4.3",
-    "com.lihaoyi" %%% "autowire" % "0.2.6",
     "com.lihaoyi" %%% "scalatags" % "0.6.1"
   )
 ).jsSettings(
