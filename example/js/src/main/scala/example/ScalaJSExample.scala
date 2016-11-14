@@ -1,28 +1,22 @@
 package example
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.dom
-import org.scalajs.dom.html
-import scala.util.Random
 import scala.concurrent.Future
 import scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import scalatags.JsDom.all._
 import upickle.default._
 import upickle.Js
-import autowire._
 
-object Client extends autowire.Client[Js.Value, Reader, Writer]{
-  override def doCall(req: Request): Future[Js.Value] = {
+object ClientApi {
+  def list(path: String): Future[Seq[String]] = {
     dom.ext.Ajax.post(
-      url = "/api/" + req.path.mkString("/"),
-      data = upickle.json.write(Js.Obj(req.args.toSeq:_*))
+      url = "/api/example/Api/list",
+      data = upickle.json.write(writeJs(Js.Obj("path" -> Js.Str(path))))
     ).map(_.responseText)
      .map(upickle.json.read)
+     .map(readJs[Seq[String]])
   }
-
-  def read[Result: Reader](p: Js.Value) = readJs[Result](p)
-  def write[Result: Writer](r: Result) = writeJs(r)
 }
-
 
 @JSExport
 object ScalaJSExample {
@@ -33,7 +27,7 @@ object ScalaJSExample {
     val outputBox = div.render
 
     def updateOutput() = {
-      Client[Api].list(inputBox.value).call().foreach { paths =>
+      ClientApi.list(inputBox.value).foreach { paths =>
         outputBox.innerHTML = ""
         outputBox.appendChild(
           ul(
