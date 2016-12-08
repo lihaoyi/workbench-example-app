@@ -43,17 +43,17 @@ object Server extends Api {
       get{
         pathSingleSlash {
           complete{
-            HttpEntity(
+            HttpResponse(200, entity = HttpEntity(
               ContentTypes.`text/html(UTF-8)`,
               Template.txt
-            )
+            ))
           }
         } ~
         getFromResourceDirectory("")
       } ~
       post {
         path("api" / Segments){ s =>
-          extract(entity(as[String])) { e =>
+          entity(as[String]) { e =>
             complete {
               AutowireServer.route[Api](Server)(
                 autowire.Core.Request(
