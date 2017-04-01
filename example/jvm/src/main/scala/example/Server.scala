@@ -7,6 +7,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 object Template{
   import scalatags.Text.all._
@@ -53,12 +54,12 @@ object Server extends Api {
       } ~
       post {
         path("api" / Segments){ s =>
-          extract(entity(as[String])) { e =>
+          extractStrictEntity(300.millis) { e =>
             complete {
               AutowireServer.route[Api](Server)(
                 autowire.Core.Request(
                   s,
-                  upickle.json.read(e).asInstanceOf[Js.Obj].value.toMap
+                  upickle.json.read(e.data.utf8String).asInstanceOf[Js.Obj].value.toMap
                 )
               ).map(upickle.json.write(_))
             }
