@@ -5,11 +5,12 @@ import scalatags.JsDom.all._
 
 import scalatags.JsDom.tags2.section
 import rx._
-import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.annotation._
 
 
 case class Task(txt: Var[String], done: Var[Boolean])
-@JSExport
+
+@JSExportTopLevel("ScalaJSExample")
 object ScalaJSExample {
   import Framework._
 
